@@ -90,7 +90,7 @@ define(['form'], function(form) {
     messages: {
       'required': 'Field required.',
       'min': 'Enter a value greater than or equal to {0}.',
-      'maxlength': 'Enter a value less than or equal to {0}.',
+      'maxlength': 'Enter a value with max length less than or equal to {0}.',
       'pattern': 'Enter a valid value.',
       'email': 'Enter a valid email address.'
     }, //Validate the form with this messages
@@ -108,7 +108,7 @@ define(['form'], function(form) {
 ``` txt
  required: This field is required
  min: Please enter a value greater than or equal to {0}
- maxlength: Please enter a value less than or equal to {0}
+ maxlength: Please enter a value with max length less than or equal to {0}
  pattern: Please enter a valid value
  email: Please enter a valid email address
 ```
@@ -135,7 +135,7 @@ define(['form'], function(form) {
 `.removeValidationErrors(selector)`
 
 ###### Description:
-Removes all validate messages from selected form
+Removes all validation messages from selected form
 
 ###### Parameters:
 > selector: String 
@@ -143,7 +143,7 @@ Removes all validate messages from selected form
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-  form.removeValidationErrors('#form'); //This will remove all validate messages appended
+  form.removeValidationErrors('#form'); //This will remove all validation messages appended
 });
 ```
 
