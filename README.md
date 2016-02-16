@@ -6,10 +6,7 @@ form.js is a small library to help form manipulations and validation. This libra
 
 [![Build Status](https://travis-ci.org/elo7/form-amd.svg?branch=master)](https://travis-ci.org/elo7/form-amd)
 
-#### Why?
-
-We needed a small lib to validate (using almost all the html5 attributes validate spec) and manipulations of our forms elements.
-
+It uses html5 form attributes validate specification and works on browsers that does not support html5 validation.
 Then, we built it from scratch.
 
 ## Installation
@@ -30,15 +27,15 @@ Form-amd also depends on [doc-amd](https://github.com/elo7/doc-amd).
 Submit the parent form when event **change** is triggered.
 
 ###### Parameters:
-> querySelector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
+> selector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
 
 > callback: Function() //A function to call before the event is triggered
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-	form.submitOnChange('#country'); //Submit the parent form when the country is selected
-	form.submitOnChange('#country', function(){...}); //Submit the parent form when the country is selected and run the callback before submit
+  form.submitOnChange('#country'); //Submit the parent form when the country is selected
+  form.submitOnChange('#country', function(){...}); //Run the callback function and then submit the parent form when the country is selected
 });
 ```
 
@@ -49,12 +46,12 @@ define(['form'], function(form) {
 Submit the parent form when event **blur** is triggered.
 
 ###### Parameters:
-> querySelector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
+> selector: String
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-	form.submitOnBlur('#name'); //Submit the parent form when the form element lose focus
+  form.submitOnBlur('#name'); //Submit the parent form when the form element loses focus
 });
 ```
 
@@ -62,15 +59,15 @@ define(['form'], function(form) {
 `.focus(selector)`
 
 ###### Description:
-Focus on element and scrollIntoView when device is mobile.
+Focus on selected element. If the device is mobile, it calls **scrollIntoView** function.
 
 ###### Parameters:
-> querySelector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
+> selector: String 
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-	form.focus('#input'); //Focus on element
+  form.focus('#input'); //Focus on the element #input
 });
 ```
 
@@ -81,56 +78,56 @@ define(['form'], function(form) {
 Validate the form using almost all the html5 attributes validate spec.
 
 ###### Parameters:
-> querySelector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
+> selector: String
 
 > object: Object //An object with the properties _messages_ ("required", "min", "maxlength", "pattern" or "email"), _success_ (function callback) or _error_ (function callback)
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-	form.validate('#form'); //Validate the form with default messages
-	form.validate('#form', {
-		messages: {
-			'required': 'Field required.',
-			'min': 'Enter a value greater than or equal to {0}.',
-			'maxlength': 'Enter a value less than or equal to {0}.',
-			'pattern': 'Enter a valid value.',
-			'email': 'Enter a valid email address.'
-		}, //Validate the form with this messages
-		success: function(){
-			// success callback
-		},
-		error: function(){
-			// error callback
-		}
-	});
+  form.validate('#form'); //Validate the form with default messages
+  form.validate('#form', {
+    messages: {
+      'required': 'Field required.',
+      'min': 'Enter a value greater than or equal to {0}.',
+      'maxlength': 'Enter a value with max length less than or equal to {0}.',
+      'pattern': 'Enter a valid value.',
+      'email': 'Enter a valid email address.'
+    }, //Validate the form with this messages
+    success: function(){
+      // success callback
+    },
+    error: function(){
+      // error callback
+    }
+  });
 });
 ```
 
 ###### Default messages:
 ``` txt
-required: This field is required
-min: Please enter a value greater than or equal to {0}
-maxlength: Please enter a value less than or equal to {0}
-pattern: Please enter a valid value
-email: Please enter a valid email address
+ required: This field is required
+ min: Please enter a value greater than or equal to {0}
+ maxlength: Please enter a value with max length less than or equal to {0}
+ pattern: Please enter a valid value
+ email: Please enter a valid email address
 ```
 
 #### appendMessage
 `.append(selector, text)`
 
 ###### Description:
-Append messages with the validate tag format
+Append validation messages
 
 ###### Parameters:
-> querySelector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
+> selector: String 
 
 > text: String
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-	form.append('label[for="date"]', 'dd/mm/yyyy'); //This will append <span class="message">dd/mm/yyyy</span>. Note that, this tag will be removed when the user start to input value on the form element inside label
+  form.append('label[for="date"]', 'dd/mm/yyyy'); //This will append <span class="message">dd/mm/yyyy</span>. Note that this element will be removed when the user starts to type another value.
 });
 ```
 
@@ -138,15 +135,15 @@ define(['form'], function(form) {
 `.removeValidationErrors(selector)`
 
 ###### Description:
-Removes all validate messages from form
+Removes all validation messages from selected form
 
 ###### Parameters:
-> querySelector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
+> selector: String 
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-	form.removeValidationErrors('#form'); //This will remove all validate messages appended
+  form.removeValidationErrors('#form'); //This will remove all validation messages appended
 });
 ```
 
@@ -156,4 +153,4 @@ Form-amd is released under the [BSD](https://github.com/elo7/form-amd/blob/maste
 
 * * *
 
-Copyright :copyright: 2015 Elo7# form-amd
+Copyright :copyright: 2016 Elo7# form-amd
