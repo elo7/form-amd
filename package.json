@@ -1,6 +1,6 @@
 {
   "name": "js-unit-tests",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "1.0.0",
   "description": "A small library to help form manipulations and validation",
   "keywords": [
     "js",
