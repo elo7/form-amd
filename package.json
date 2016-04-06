@@ -1,6 +1,6 @@
 {
   "name": "form-amd",
-  "version": "1.0.1-SNAPSHOT",
+  "version": "1.0.1",
   "description": "A small library to help form manipulations and validation",
   "keywords": [
     "js",
