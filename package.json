@@ -1,5 +1,5 @@
 {
-  "name": "js-unit-tests",
+  "name": "form-amd",
   "version": "1.0.1-SNAPSHOT",
   "description": "A small library to help form manipulations and validation",
   "keywords": [
@@ -14,7 +14,7 @@
   },
   "author": "Elo7",
   "dependency": {
-  	"doc-amd": "1.0.5"
+    "doc-amd": "1.0.5"
   },
   "devDependencies": {
     "mocha": "2.0.1",

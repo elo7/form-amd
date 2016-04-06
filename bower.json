@@ -1,5 +1,5 @@
 {
-  "name": "doc-amd",
+  "name": "form-amd",
   "version": "1.0.1-SNAPSHOT",
   "homepage": "https://github.com/elo7/form-amd",
   "description": "A small library to help form manipulations and validation",
