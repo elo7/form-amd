@@ -15,7 +15,7 @@
   },
   "author": "Elo7",
   "dependency": {
-    "doc-amd": "1.0.5"
+    "doc-amd": "1.0.6"
   },
   "devDependencies": {
     "bower": "1.4.1",

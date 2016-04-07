@@ -66,7 +66,7 @@ define('form', ['doc'], function($) {
 	};
 
 	var isValid = function(form) {
-		var isValid = true;
+		var valid = true;
 
 		removeValidationErrors(form);
 
@@ -74,7 +74,7 @@ define('form', ['doc'], function($) {
 			if (isEmpty($(element).val())) {
 				var parent = element.parentElement;
 				appendMessage($(parent), validationMessages.required);
-				isValid = false;
+				valid = false;
 			}
 		});
 
@@ -85,7 +85,7 @@ define('form', ['doc'], function($) {
 			if (value && value.length < length) {
 				var parent = element.parentElement;
 				appendMessageWithArgs($(parent), validationMessages.min, length);
-				isValid = false;
+				valid = false;
 			}
 		});
 
@@ -95,7 +95,7 @@ define('form', ['doc'], function($) {
 			if ($(element).val() && $(element).val().length > length) {
 				var parent = element.parentElement;
 				appendMessageWithArgs($(parent), validationMessages.maxlength, length);
-				isValid = false;
+				valid = false;
 			}
 		});
 
@@ -105,7 +105,7 @@ define('form', ['doc'], function($) {
 			if ($(element).val() && !pattern.test($(element).val())) {
 				var parent = element.parentElement;
 				appendMessage($(parent), validationMessages.pattern);
-				isValid = false;
+				valid = false;
 			}
 		});
 
@@ -115,11 +115,11 @@ define('form', ['doc'], function($) {
 			if (($(element).val()) && !pattern.test($(element).val())) {
 				var parent = element.parentElement;
 				appendMessage($(parent), validationMessages.email);
-				isValid = false;
+				valid = false;
 			}
 		});
 
-		if (!isValid){
+		if (!valid){
 			form.addClass('has-errors');
 
 			var visibleErrorFields = $('.error input, .error textarea').filter(function(field) {
@@ -130,7 +130,7 @@ define('form', ['doc'], function($) {
 			this.focus(visibleErrorFields.first());
 		}
 
-		return isValid;
+		return valid;
 	};
 
 	var addEventToClearErrorMessages = function(visibleErrorFields) {
@@ -146,16 +146,23 @@ define('form', ['doc'], function($) {
 		});
 	};
 
+	var toElements = function(selectorOrElements) {
+		if (typeof selectorOrElements === 'string') {
+			return $(selectorOrElements);
+		}
+		return selectorOrElements;
+	};
+
 	return {
 		/**
-		 * @param elements
+		 * @param selectorOrElements CSS selector or doc object with selected elements
 		 * @param function to execute before submitting form
 		 *
 		 * Usage example:
 		 * 	form.submitOnChange(<FORM_ELEMENTS>, BEFORE_FUNCTION);
 		 */
-		'submitOnChange': function(selector, beforeSubmit) {
-			var elements = $(selector);
+		'submitOnChange': function(selectorOrElements, beforeSubmit) {
+			var elements = toElements(selectorOrElements);
 			elements.on('change', function() {
 				var form = $(this.form);
 				if (beforeSubmit) {
@@ -220,7 +227,7 @@ define('form', ['doc'], function($) {
 			var $form = $(form);
 			$form.attr('novalidate', true);
 			$form.throttle('submit', function() {
-				if (isValid($form)) {
+				if (isValid.call(this, $form)) {
 					configs && configs.success && configs.success.apply(this, arguments);
 				} else {
 					configs && configs.error && configs.error.apply(this, arguments);
