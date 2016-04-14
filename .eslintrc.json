@@ -1,0 +1,23 @@
+{
+    "env": {
+        "browser": true
+    },
+    "globals": {
+        "define": false
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": ["error", "tab"],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "strict": ["error", "safe"],
+        "keyword-spacing": ["error", {
+            "overrides": {
+                "catch": {
+                    "after": false
+                }
+            }
+        }]
+    }
+}

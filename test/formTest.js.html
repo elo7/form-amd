@@ -1,228 +1,241 @@
 <html>
-  <head>
-    <title>Tests form.js</title>
-    <meta charset="utf-8">
-    <link href="/css/mocha.css" type="text/css" rel="stylesheet"/>
-  </head>
-  <body>
-    <div id="mocha"></div>
+	<head>
+		<title>Tests form.js</title>
+		<meta charset="utf-8">
+		<link href="/css/mocha.css" type="text/css" rel="stylesheet"/>
+	</head>
+	<body>
+		<div id="mocha"></div>
 
-    <div id="test-suite">
-      <form id="submitOnChange" action="#">
-        <select id="selectChange">
-          <option value="1">1</option>
-          <option value="2">2</option>
-        </select>
-      </form>
-      <form id="submitOnBlur" action="#">
-        <input id="inputBlur" value='teste'>
-      </form>
+		<div id="test-suite">
+			<form id="submitOnChange" action="#">
+				<select id="selectChange">
+					<option value="1">1</option>
+					<option value="2">2</option>
+				</select>
+			</form>
+			<form id="submitOnBlur" action="#">
+				<input id="inputBlur" value='teste'>
+			</form>
 
-      <label id='labelAppendMessage'>
-        <input id="inputFocus">
-      </label>
+			<label id='labelAppendMessage'>
+				<input id="inputFocus">
+			</label>
 
-      <form id="formClearMessages" action="#">
-        <label id="label1">
-          <input name="test1" required>
-        </label>
-        <label id="label2">
-          <input type="email" name="test2" value="test">
-        </label>
-        <label id="label3">
-          <select required></select>
-        </label>
-        <label id="label4">
-          <input value="abc" maxlength="2">
-        </label>
-        <label id="label5">
-          <input value="a" min="3">
-        </label>
-        <label id="label6">
-          <input value="a" pattern="[\d\.,]+">
-        </label>
-        <label id="label7">
-          <input value="a" required>
-        </label>
-      </form>
+			<form id="formClearMessages" action="#">
+				<label id="label1">
+					<input name="test1" required>
+				</label>
+				<label id="label2">
+					<input type="email" name="test2" value="test">
+				</label>
+				<label id="label3">
+					<select required></select>
+				</label>
+				<label id="label4">
+					<input value="abc" maxlength="2">
+				</label>
+				<label id="label5">
+					<input value="a" min="3">
+				</label>
+				<label id="label6">
+					<input value="a" pattern="[\d\.,]+">
+				</label>
+				<label id="label7">
+					<input value="a" required>
+				</label>
+			</form>
 
-      <form id="formSucess" action="#">
-        <input value="a" required>
-      </form>
-    </div>
+			<form id="formSucess" action="#">
+				<input value="a" required>
+			</form>
+		</div>
 
-    <script src="/node_modules/mocha/mocha.js"></script>
-    <script src="/node_modules/proclaim/lib/proclaim.js"></script>
-    <script src="/test/helpers.js"></script>
+		<script src="/node_modules/mocha/mocha.js"></script>
+		<script src="/node_modules/proclaim/lib/proclaim.js"></script>
+		<script src="/test/helpers.js"></script>
 
-    <script src="/bower_components/async-define/async-define.js"></script>
-    <script src="/bower_components/events-amd/events-amd.js"></script>
-    <script src="/bower_components/doc-amd/doc.js"></script>
-    <script src="/form.js"></script>
-    <script>
-      var assert = window.proclaim;
+		<script src="/bower_components/async-define/async-define.js"></script>
+		<script src="/bower_components/events-amd/events-amd.js"></script>
+		<script src="/bower_components/doc-amd/doc.js"></script>
+		<script src="/form.js"></script>
+		<script>
+			var assert = window.proclaim;
 
-      mocha.ui("bdd");
+			mocha.ui("bdd");
 
-      define(['doc', 'form'], function($, form) {
-        describe('Form', function(){
-          it('should contains all known methods', function(){
-            var current = [];
-            for(var methodName in form) current.push(methodName);
-            assert.equal(arrayEquals(knownMethods(), current), true);
-          });
+			define(['doc', 'form'], function($, form) {
+				describe('Form', function(){
+					it('should contains all known methods', function(){
+						var current = [];
+						for(var methodName in form) current.push(methodName);
+						assert.equal(arrayEquals(knownMethods(), current), true);
+					});
 
-          it('should submit form when select tag event change was dispatch', function(){
-            var expected = false;
-            form.submitOnChange('#selectChange');
-            $('#submitOnChange').on('submit', function(e){
-              e.preventDefault ? e.preventDefault() : e.returnValue = false;
-              expected = true;
-            });
-            $('#selectChange').trigger('change');
+					it('should submit form when event change was dispatch on element with specified selector', function(){
+						var expected = false;
+						form.submitOnChange('#selectChange');
+						$('#submitOnChange').on('submit', function(e){
+							e.preventDefault ? e.preventDefault() : e.returnValue = false;
+							expected = true;
+						});
+						$('#selectChange').trigger('change');
 
-            assert.equal(true, expected);
-          });
+						assert.equal(true, expected);
+					});
 
-          it('should call beforeSubmit when select tag event change was dispatch', function(){
-            var expected = false;
-            form.submitOnChange('#selectChange', function(){
-              expected = true;
-            });
-            $('#submitOnChange').on('submit', function(e){
-              e.preventDefault ? e.preventDefault() : e.returnValue = false;
-            });
-            $('#selectChange').trigger('change');
+					it('should submit form when event change was dispatch on element passed as parameter', function(){
+						var expected = false;
+						var $selectChange = $('#selectChange');
+						form.submitOnChange($selectChange);
+						$('#submitOnChange').on('submit', function(e){
+							e.preventDefault ? e.preventDefault() : e.returnValue = false;
+							expected = true;
+						});
+						$selectChange.trigger('change');
 
-            assert.equal(true, expected);
-          });
+						assert.equal(true, expected);
+					});
 
-          it('should submit form when input tag event blur was dispatch', function(){
-            var expected = false;
-            form.submitOnBlur('#inputBlur');
-            form.focus('#inputBlur');
-            $('#submitOnBlur').on('submit', function(e){
-              e.preventDefault ? e.preventDefault() : e.returnValue = false;
-              expected = true;
-            });
-            $('#inputBlur').trigger('blur');
+					it('should call beforeSubmit when select tag event change was dispatch', function(){
+						var expected = false;
+						form.submitOnChange('#selectChange', function(){
+							expected = true;
+						});
+						$('#submitOnChange').on('submit', function(e){
+							e.preventDefault ? e.preventDefault() : e.returnValue = false;
+						});
+						$('#selectChange').trigger('change');
 
-            assert.equal(true, expected);
-          });
+						assert.equal(true, expected);
+					});
 
-          it('should focus element', function(){
-            form.focus('#inputFocus');
+					it('should submit form when input tag event blur was dispatch', function(){
+						var expected = false;
+						form.submitOnBlur('#inputBlur');
+						form.focus('#inputBlur');
+						$('#submitOnBlur').on('submit', function(e){
+							e.preventDefault ? e.preventDefault() : e.returnValue = false;
+							expected = true;
+						});
+						$('#inputBlur').trigger('blur');
 
-            assert.equal($('#inputFocus').first(), document.activeElement);
-          });
+						assert.equal(true, expected);
+					});
 
-          it('should insert error message for all elements', function(){
-            form.validate('#formClearMessages');
-            $('#formClearMessages').trigger('submit');
+					it('should focus element', function(){
+						form.focus('#inputFocus');
 
-            assert.equal($('#label1').find('.message').isEmpty(), false);
-            assert.equal($('#label1').find('.message').text(), "This field is required");
-            assert.equal($('#label2').find('.message').isEmpty(), false);
-            assert.equal($('#label2').find('.message').text(), "Please enter a valid email address");
-            assert.equal($('#label3').find('.message').isEmpty(), false);
-            assert.equal($('#label3').find('.message').text(), "This field is required");
-            assert.equal($('#label4').find('.message').isEmpty(), false);
-            assert.equal($('#label4').find('.message').text(), "Please enter a value with max length less than or equal to 2");
-            assert.equal($('#label5').find('.message').isEmpty(), false);
-            assert.equal($('#label5').find('.message').text(), "Please enter a value greater than or equal to 3");
-            assert.equal($('#label6').find('.message').isEmpty(), false);
-            assert.equal($('#label6').find('.message').text(), "Please enter a valid value");
-            assert.equal($('#label7').find('.message').isEmpty(), true);
-          });
+						assert.equal($('#inputFocus').first(), document.activeElement);
+					});
 
-          it('should insert error custom message for all elements', function(){
-            var messages = {
-              'required': 'Preencha este campo, por favor!',
-              'min': 'Insira no mínimo {0} caracteres, por favor!',
-              'maxlength': 'Insira no máximo {0} caracteres, por favor!',
-              'pattern': 'Insira um valor válido, por favor!',
-              'email': 'Insira um e-mail válido, por favor!'
-            };
-            form.validate('#formClearMessages', {messages: messages});
-            $('#formClearMessages').trigger('submit');
+					it('should insert error message for all elements', function(){
+						form.validate('#formClearMessages');
+						$('#formClearMessages').trigger('submit');
 
-            assert.equal($('#label1').find('.message').text(), "Preencha este campo, por favor!");
-            assert.equal($('#label2').find('.message').text(), "Insira um e-mail válido, por favor!");
-            assert.equal($('#label3').find('.message').text(), "Preencha este campo, por favor!");
-            assert.equal($('#label4').find('.message').text(), "Insira no máximo 2 caracteres, por favor!");
-            assert.equal($('#label5').find('.message').text(), "Insira no mínimo 3 caracteres, por favor!");
-            assert.equal($('#label6').find('.message').text(), "Insira um valor válido, por favor!");
-          });
+						assert.equal($('#label1').find('.message').isEmpty(), false);
+						assert.equal($('#label1').find('.message').text(), "This field is required");
+						assert.equal($('#label2').find('.message').isEmpty(), false);
+						assert.equal($('#label2').find('.message').text(), "Please enter a valid email address");
+						assert.equal($('#label3').find('.message').isEmpty(), false);
+						assert.equal($('#label3').find('.message').text(), "This field is required");
+						assert.equal($('#label4').find('.message').isEmpty(), false);
+						assert.equal($('#label4').find('.message').text(), "Please enter a value with max length less than or equal to 2");
+						assert.equal($('#label5').find('.message').isEmpty(), false);
+						assert.equal($('#label5').find('.message').text(), "Please enter a value greater than or equal to 3");
+						assert.equal($('#label6').find('.message').isEmpty(), false);
+						assert.equal($('#label6').find('.message').text(), "Please enter a valid value");
+						assert.equal($('#label7').find('.message').isEmpty(), true);
+					});
 
-          it('should call success callback', function(){
-            var expected = false;
-            form.validate('#formSucess', {
-              success: function(){
-                expected = true;
-              }
-            });
-            $('#formSucess').trigger('submit');
+					it('should insert error custom message for all elements', function(){
+						var messages = {
+							'required': 'Preencha este campo, por favor!',
+							'min': 'Insira no mínimo {0} caracteres, por favor!',
+							'maxlength': 'Insira no máximo {0} caracteres, por favor!',
+							'pattern': 'Insira um valor válido, por favor!',
+							'email': 'Insira um e-mail válido, por favor!'
+						};
+						form.validate('#formClearMessages', {messages: messages});
+						$('#formClearMessages').trigger('submit');
 
-            assert.equal(true, expected);
-          });
+						assert.equal($('#label1').find('.message').text(), "Preencha este campo, por favor!");
+						assert.equal($('#label2').find('.message').text(), "Insira um e-mail válido, por favor!");
+						assert.equal($('#label3').find('.message').text(), "Preencha este campo, por favor!");
+						assert.equal($('#label4').find('.message').text(), "Insira no máximo 2 caracteres, por favor!");
+						assert.equal($('#label5').find('.message').text(), "Insira no mínimo 3 caracteres, por favor!");
+						assert.equal($('#label6').find('.message').text(), "Insira um valor válido, por favor!");
+					});
 
-          it('should call error callback', function(){
-            var expected = false;
-            form.validate('#formClearMessages', {
-              error: function(){
-                expected = true;
-              }
-            });
-            $('#formClearMessages').trigger('submit');
+					it('should call success callback', function(){
+						var expected = false;
+						form.validate('#formSucess', {
+							success: function(){
+								expected = true;
+							}
+						});
+						$('#formSucess').trigger('submit');
 
-            assert.equal(true, expected);
-          });
+						assert.equal(true, expected);
+					});
 
-          it('should append message inside label', function(){
-            form.appendMessage('#labelAppendMessage', 'Teste');
+					it('should call error callback', function(){
+						var expected = false;
+						form.validate('#formClearMessages', {
+							error: function(){
+								expected = true;
+							}
+						});
+						$('#formClearMessages').trigger('submit');
 
-            assert.equal($('#labelAppendMessage').find('.message').isEmpty(), false);
-          });
+						assert.equal(true, expected);
+					});
 
-          it('should append message inside label and remove the message when input event was dispatch', function(){
-            form.appendMessage('#labelAppendMessage', 'Teste');
-            $('#labelAppendMessage input').trigger('input');
+					it('should append message inside label', function(){
+						form.appendMessage('#labelAppendMessage', 'Teste');
 
-            assert.equal($('#labelAppendMessage').find('.message').isEmpty(), true);
-          });
+						assert.equal($('#labelAppendMessage').find('.message').isEmpty(), false);
+					});
 
-          it('should remove all error messages', function(){
-            form.validate('#formClearMessages');
-            $('#formClearMessages').trigger('submit');
+					it('should append message inside label and remove the message when input event was dispatch', function(){
+						form.appendMessage('#labelAppendMessage', 'Teste');
+						$('#labelAppendMessage input').trigger('input');
 
-            form.removeValidationErrors('#formClearMessages');
+						assert.equal($('#labelAppendMessage').find('.message').isEmpty(), true);
+					});
 
-            assert.equal($('#label1').find('.message').isEmpty(), true);
-            assert.equal($('#label2').find('.message').isEmpty(), true);
-            assert.equal($('#label3').find('.message').isEmpty(), true);
-            assert.equal($('#label4').find('.message').isEmpty(), true);
-            assert.equal($('#label5').find('.message').isEmpty(), true);
-            assert.equal($('#label6').find('.message').isEmpty(), true);
-          });
-        });
-      });
-    </script>
-    <script>
-      if (window.mochaPhantomJS) {
-        mochaPhantomJS.run();
-      } else {
-        mocha.run();
-      }
-      function knownMethods(){
-        return [
-          'submitOnChange',
-          'submitOnBlur',
-          'focus',
-          'validate',
-          'appendMessage',
-          'removeValidationErrors'
-        ];
-      }
-    </script>
-  </body>
+					it('should remove all error messages', function(){
+						form.validate('#formClearMessages');
+						$('#formClearMessages').trigger('submit');
+
+						form.removeValidationErrors('#formClearMessages');
+
+						assert.equal($('#label1').find('.message').isEmpty(), true);
+						assert.equal($('#label2').find('.message').isEmpty(), true);
+						assert.equal($('#label3').find('.message').isEmpty(), true);
+						assert.equal($('#label4').find('.message').isEmpty(), true);
+						assert.equal($('#label5').find('.message').isEmpty(), true);
+						assert.equal($('#label6').find('.message').isEmpty(), true);
+					});
+				});
+			});
+		</script>
+		<script>
+			if (window.mochaPhantomJS) {
+				mochaPhantomJS.run();
+			} else {
+				mocha.run();
+			}
+			function knownMethods(){
+				return [
+					'submitOnChange',
+					'submitOnBlur',
+					'focus',
+					'validate',
+					'appendMessage',
+					'removeValidationErrors'
+				];
+			}
+		</script>
+	</body>
 </html>
