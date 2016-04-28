@@ -224,7 +224,7 @@ define('form', ['doc'], function($) {
 			if (configs && configs.messages) {
 				validationMessages = configs.messages;
 			}
-			var $form = $(form);
+			var $form = toElements(form);
 			$form.attr('novalidate', true);
 			$form.throttle('submit', function() {
 				if (isValid.call(this, $form)) {
