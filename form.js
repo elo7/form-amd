@@ -23,10 +23,10 @@ define('form', ['doc'], function($) {
 	}
 
 	var appendMessage = function(label, message) {
-		if (label.find('.message').isEmpty()) {
+		if (label.find('.validation-message').isEmpty()) {
 			label.addClass('validation').addClass('error');
 			var messageTag = document.createElement('span');
-			$(messageTag).addClass('message');
+			$(messageTag).addClass('validation-message');
 
 			$(messageTag).text(message);
 			label.first().appendChild(messageTag);
@@ -44,7 +44,7 @@ define('form', ['doc'], function($) {
 
 	var removeValidationErrors = function(form) {
 		form.removeClass('has-errors');
-		form.find('.message').each(function(el) {
+		form.find('.validation-message').each(function(el) {
 			$(el).parent().removeClass('error');
 			$(el).removeItem();
 		});
@@ -141,7 +141,7 @@ define('form', ['doc'], function($) {
 				target.off('input', 'validationOff');
 				parent.removeClass('validation');
 				parent.removeClass('error');
-				parent.find('.message').removeItem();
+				parent.find('.validation-message').removeItem();
 			}, 'validationOff');
 		});
 	};
