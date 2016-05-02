@@ -133,19 +133,19 @@
 						form.validate('#formClearMessages');
 						$('#formClearMessages').trigger('submit');
 
-						assert.equal($('#label1').find('.message').isEmpty(), false);
-						assert.equal($('#label1').find('.message').text(), "This field is required");
-						assert.equal($('#label2').find('.message').isEmpty(), false);
-						assert.equal($('#label2').find('.message').text(), "Please enter a valid email address");
-						assert.equal($('#label3').find('.message').isEmpty(), false);
-						assert.equal($('#label3').find('.message').text(), "This field is required");
-						assert.equal($('#label4').find('.message').isEmpty(), false);
-						assert.equal($('#label4').find('.message').text(), "Please enter a value with max length less than or equal to 2");
-						assert.equal($('#label5').find('.message').isEmpty(), false);
-						assert.equal($('#label5').find('.message').text(), "Please enter a value greater than or equal to 3");
-						assert.equal($('#label6').find('.message').isEmpty(), false);
-						assert.equal($('#label6').find('.message').text(), "Please enter a valid value");
-						assert.equal($('#label7').find('.message').isEmpty(), true);
+						assert.equal($('#label1').find('.validation-message').isEmpty(), false);
+						assert.equal($('#label1').find('.validation-message').text(), "This field is required");
+						assert.equal($('#label2').find('.validation-message').isEmpty(), false);
+						assert.equal($('#label2').find('.validation-message').text(), "Please enter a valid email address");
+						assert.equal($('#label3').find('.validation-message').isEmpty(), false);
+						assert.equal($('#label3').find('.validation-message').text(), "This field is required");
+						assert.equal($('#label4').find('.validation-message').isEmpty(), false);
+						assert.equal($('#label4').find('.validation-message').text(), "Please enter a value with max length less than or equal to 2");
+						assert.equal($('#label5').find('.validation-message').isEmpty(), false);
+						assert.equal($('#label5').find('.validation-message').text(), "Please enter a value greater than or equal to 3");
+						assert.equal($('#label6').find('.validation-message').isEmpty(), false);
+						assert.equal($('#label6').find('.validation-message').text(), "Please enter a valid value");
+						assert.equal($('#label7').find('.validation-message').isEmpty(), true);
 					});
 
 					it('should insert error custom message for all elements', function(){
@@ -159,12 +159,12 @@
 						form.validate('#formClearMessages', {messages: messages});
 						$('#formClearMessages').trigger('submit');
 
-						assert.equal($('#label1').find('.message').text(), "Preencha este campo, por favor!");
-						assert.equal($('#label2').find('.message').text(), "Insira um e-mail válido, por favor!");
-						assert.equal($('#label3').find('.message').text(), "Preencha este campo, por favor!");
-						assert.equal($('#label4').find('.message').text(), "Insira no máximo 2 caracteres, por favor!");
-						assert.equal($('#label5').find('.message').text(), "Insira no mínimo 3 caracteres, por favor!");
-						assert.equal($('#label6').find('.message').text(), "Insira um valor válido, por favor!");
+						assert.equal($('#label1').find('.validation-message').text(), "Preencha este campo, por favor!");
+						assert.equal($('#label2').find('.validation-message').text(), "Insira um e-mail válido, por favor!");
+						assert.equal($('#label3').find('.validation-message').text(), "Preencha este campo, por favor!");
+						assert.equal($('#label4').find('.validation-message').text(), "Insira no máximo 2 caracteres, por favor!");
+						assert.equal($('#label5').find('.validation-message').text(), "Insira no mínimo 3 caracteres, por favor!");
+						assert.equal($('#label6').find('.validation-message').text(), "Insira um valor válido, por favor!");
 					});
 
 					it('should call success callback', function(){
@@ -194,14 +194,14 @@
 					it('should append message inside label', function(){
 						form.appendMessage('#labelAppendMessage', 'Teste');
 
-						assert.equal($('#labelAppendMessage').find('.message').isEmpty(), false);
+						assert.equal($('#labelAppendMessage').find('.validation-message').isEmpty(), false);
 					});
 
 					it('should append message inside label and remove the message when input event was dispatch', function(){
 						form.appendMessage('#labelAppendMessage', 'Teste');
 						$('#labelAppendMessage input').trigger('input');
 
-						assert.equal($('#labelAppendMessage').find('.message').isEmpty(), true);
+						assert.equal($('#labelAppendMessage').find('.validation-message').isEmpty(), true);
 					});
 
 					it('should remove all error messages', function(){
@@ -210,12 +210,12 @@
 
 						form.removeValidationErrors('#formClearMessages');
 
-						assert.equal($('#label1').find('.message').isEmpty(), true);
-						assert.equal($('#label2').find('.message').isEmpty(), true);
-						assert.equal($('#label3').find('.message').isEmpty(), true);
-						assert.equal($('#label4').find('.message').isEmpty(), true);
-						assert.equal($('#label5').find('.message').isEmpty(), true);
-						assert.equal($('#label6').find('.message').isEmpty(), true);
+						assert.equal($('#label1').find('.validation-message').isEmpty(), true);
+						assert.equal($('#label2').find('.validation-message').isEmpty(), true);
+						assert.equal($('#label3').find('.validation-message').isEmpty(), true);
+						assert.equal($('#label4').find('.validation-message').isEmpty(), true);
+						assert.equal($('#label5').find('.validation-message').isEmpty(), true);
+						assert.equal($('#label6').find('.validation-message').isEmpty(), true);
 					});
 				});
 			});
