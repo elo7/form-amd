@@ -21,20 +21,20 @@ Form-amd also depends on [doc-amd](https://github.com/elo7/doc-amd).
 ## Methods
 
 #### submitOnChange
-`.submitOnChange(selector[, callback])`
+`.submitOnChange(selectorOrDocElement[, callback])`
 
 ###### Description:
 Submit the parent form when event **change** is triggered.
 
 ###### Parameters:
-> selector: String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
+> selectorOrDocElement: doc-amd object or String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
 
 > callback: Function() //A function to call before the event is triggered
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-  form.submitOnChange('#country'); //Submit the parent form when the country is selected
+  form.submitOnChange($('#country')); //Submit the parent form when the country is selected
   form.submitOnChange('#country', function(){...}); //Run the callback function and then submit the parent form when the country is selected
 });
 ```
@@ -72,20 +72,20 @@ define(['form'], function(form) {
 ```
 
 #### validate
-`.validate(selector[, object])`
+`.validate(selectorOrDocElement[, object])`
 
 ###### Description:
 Validate the form using almost all the html5 attributes validate spec.
 
 ###### Parameters:
-> selector: String
+> selectorOrDocElement: doc-amd object or String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
 
 > object: Object //An object with the properties _messages_ ("required", "min", "maxlength", "pattern" or "email"), _success_ (function callback) or _error_ (function callback)
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-  form.validate('#form'); //Validate the form with default messages
+  form.validate($('#form')); //Validate the form with default messages
   form.validate('#form', {
     messages: {
       'required': 'Field required.',
