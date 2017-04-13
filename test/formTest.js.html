@@ -44,6 +44,9 @@
 				<label id="label7">
 					<input value="a" required>
 				</label>
+				<label id="label8">
+					<input type="url" name="test3" value="test">
+				</label>
 			</form>
 
 			<form id="formSucess" action="#">
@@ -146,6 +149,7 @@
 						assert.equal($('#label6').find('.validation-message').isEmpty(), false);
 						assert.equal($('#label6').find('.validation-message').text(), "Please enter a valid value");
 						assert.equal($('#label7').find('.validation-message').isEmpty(), true);
+						assert.equal($('#label8').find('.validation-message').text(), "Please enter a valid url");
 					});
 
 					it('should insert error custom message for all elements', function(){
@@ -154,17 +158,19 @@
 							'min': 'Insira no mínimo {0} caracteres, por favor!',
 							'maxlength': 'Insira no máximo {0} caracteres, por favor!',
 							'pattern': 'Insira um valor válido, por favor!',
-							'email': 'Insira um e-mail válido, por favor!'
+							'email': 'Insira um e-mail válido, por favor!',
+							'url': 'Insira uma url válida, por favor!'
 						};
 						form.validate('#formClearMessages', {messages: messages});
 						$('#formClearMessages').trigger('submit');
 
-						assert.equal($('#label1').find('.validation-message').text(), "Preencha este campo, por favor!");
-						assert.equal($('#label2').find('.validation-message').text(), "Insira um e-mail válido, por favor!");
-						assert.equal($('#label3').find('.validation-message').text(), "Preencha este campo, por favor!");
-						assert.equal($('#label4').find('.validation-message').text(), "Insira no máximo 2 caracteres, por favor!");
-						assert.equal($('#label5').find('.validation-message').text(), "Insira no mínimo 3 caracteres, por favor!");
-						assert.equal($('#label6').find('.validation-message').text(), "Insira um valor válido, por favor!");
+						assert.equal($('#label1').find('.validation-message').text(), messages.required);
+						assert.equal($('#label2').find('.validation-message').text(), messages.email);
+						assert.equal($('#label3').find('.validation-message').text(), messages.required);
+						assert.equal($('#label4').find('.validation-message').text(), messages.maxlength.replace('{0}', '2'));
+						assert.equal($('#label5').find('.validation-message').text(), messages.min.replace('{0}', '3'));
+						assert.equal($('#label6').find('.validation-message').text(), messages.pattern);
+						assert.equal($('#label8').find('.validation-message').text(), messages.url);
 					});
 
 					it('should call success callback', function(){
@@ -216,6 +222,7 @@
 						assert.equal($('#label4').find('.validation-message').isEmpty(), true);
 						assert.equal($('#label5').find('.validation-message').isEmpty(), true);
 						assert.equal($('#label6').find('.validation-message').isEmpty(), true);
+						assert.equal($('#label8').find('.validation-message').isEmpty(), true);
 					});
 				});
 			});
