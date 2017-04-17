@@ -121,10 +121,7 @@ define('form', ['doc'], function($) {
 		});
 
 		form.find('[type="url"]').each(function(element){
-			var pattern = new RegExp(/^http(s)?:\/\/(www\.)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/),
-				value = $(element).val();
-
-			if (value && !pattern.test(value)) {
+			if ($(element).val() && !element.validity.valid) {
 				var parent = element.parentElement;
 				appendMessage($(parent), validationMessages.url);
 				valid = false;
