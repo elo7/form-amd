@@ -1,6 +1,6 @@
 {
   "name": "form-amd",
-  "version": "1.0.4",
+  "version": "1.0.5-SNAPSHOT",
   "homepage": "https://github.com/elo7/form-amd",
   "description": "A small library to help form manipulations and validation",
   "main": "form.js",
