@@ -55,7 +55,8 @@ define('form', ['doc'], function($) {
 		'min': 'Please enter a value greater than or equal to {0}',
 		'maxlength': 'Please enter a value with max length less than or equal to {0}',
 		'pattern': 'Please enter a valid value',
-		'email': 'Please enter a valid email address'
+		'email': 'Please enter a valid email address',
+		'url': 'Please enter a valid url'
 	};
 
 	var isEmpty = function(value) {
@@ -115,6 +116,14 @@ define('form', ['doc'], function($) {
 			if (($(element).val()) && !pattern.test($(element).val())) {
 				var parent = element.parentElement;
 				appendMessage($(parent), validationMessages.email);
+				valid = false;
+			}
+		});
+
+		form.find('[type="url"]').each(function(element){
+			if ($(element).val() && !element.validity.valid) {
+				var parent = element.parentElement;
+				appendMessage($(parent), validationMessages.url);
 				valid = false;
 			}
 		});
