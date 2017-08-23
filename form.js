@@ -163,7 +163,13 @@ define('form', ['doc'], function($) {
 		visibleErrorFields.each(function(element){
 			$(element).on('input', function(event){
 				var target = event.target ? $(event.target) : $(window.event.srcElement),
-					parent = target.parent();
+					parent = target.parent(),
+					describedBy = target.attr('aria-describedby');
+
+				if (describedBy) {
+					target.attr('aria-describedby', describedBy.replace(/[\d+\s+?]/g, ''));
+				}
+
 				target.off('input', 'validationOff');
 				parent.removeClass('validation');
 				parent.removeClass('error');
