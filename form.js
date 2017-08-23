@@ -23,11 +23,19 @@ define('form', ['doc'], function($) {
 	}
 
 	var appendMessage = function($el, message) {
-		var label = $el.parent();
+		var label = $el.parent(),
+			description = $el.attr('aria-describedby');
+
 		if (label.find('.validation-message').isEmpty()) {
 			var now = + new Date();
 			label.addClass('validation').addClass('error');
+
+			if (description) {
+				now += ' ' + description;
+			}
+
 			$el.attr('aria-describedby', now);
+
 			var messageTag = document.createElement('span');
 			messageTag.id = now;
 			$(messageTag).addClass('validation-message');
@@ -118,7 +126,7 @@ define('form', ['doc'], function($) {
 
 		form.find('[type="email"]').each(function(element){
 			var $el = $(element),
-				pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+				pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
 				value = $el.val();
 
 			if (value && !pattern.test(value)) {

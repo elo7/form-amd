@@ -69,13 +69,15 @@
 		<fieldset>
 			<legend>Dados pessoais</legend>
 
-			<label>Nome:
+			<div>
+				<label for="nome">Nome:</label>
 				<input id="nome" name="nome" required>
-			</label>
+			</div>
 
-			<label>Email:
+			<div>
+				<label for="email">Email:</label>
 				<input id="email" type="email" name="email" required>
-			</label>
+			</div>
 
 			<label>CPF (apenas números):
 				<input id="cpf" name="cpf" required pattern="[0-9]{11}" placeholder="00000000000">
@@ -100,10 +102,11 @@
 				<input required type="file" name="avatar" aria-description="avatar-description">
 			</label>
 
-			<label>Defina uma senha:
+			<div>
+				<label for="pass">Defina uma senha:</label>
 				<input type="password" id="pass" name="pass" required aria-describedby="pass-description">
-			</label>
-			<span class="description" id="pass-description">A senha deve conter pelo menos 8 caracteres e deve misturar letras e números</span>
+				<span class="description" id="pass-description">A senha deve conter pelo menos 8 caracteres e deve misturar letras e números</span>
+			</div>
 
 			<label>Confirme a senha:
 				<input type="password" id="passconfirm" name="passconfirm" required>
