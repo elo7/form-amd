@@ -22,10 +22,14 @@ define('form', ['doc'], function($) {
 		};
 	}
 
-	var appendMessage = function(label, message) {
+	var appendMessage = function($el, message) {
+		var label = $el.parent();
 		if (label.find('.validation-message').isEmpty()) {
+			var now = + new Date();
 			label.addClass('validation').addClass('error');
+			$el.attr('aria-describedby', now);
 			var messageTag = document.createElement('span');
+			messageTag.id = now;
 			$(messageTag).addClass('validation-message');
 
 			$(messageTag).text(message);
@@ -72,66 +76,71 @@ define('form', ['doc'], function($) {
 		removeValidationErrors(form);
 
 		form.find('[required]').each(function(element){
-			if (isEmpty($(element).val())) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.required);
+			var $el = $(element);
+			if (isEmpty($el.val())) {
+				appendMessage($el, validationMessages.required);
 				valid = false;
 			}
 		});
 
 		form.find('[min]').each(function(element){
-			var length = parseInt(element.getAttribute('min')),
-				value = $(element).val().trim();
+			var $el = $(element),
+				length = parseInt($el.attr('min')),
+				value = $el.val().trim();
 
 			if (value && value.length < length) {
-				var parent = element.parentElement;
-				appendMessageWithArgs($(parent), validationMessages.min, length);
+				appendMessageWithArgs($el, validationMessages.min, length);
 				valid = false;
 			}
 		});
 
 		form.find('[maxlength]').each(function(element){
-			var length = parseInt(element.getAttribute('maxlength'));
+			var $el = $(element),
+				length = parseInt($el.attr('maxlength')),
+				value = $el.val();
 
-			if ($(element).val() && $(element).val().length > length) {
-				var parent = element.parentElement;
-				appendMessageWithArgs($(parent), validationMessages.maxlength, length);
+			if (value && value.length > length) {
+				appendMessageWithArgs($el, validationMessages.maxlength, length);
 				valid = false;
 			}
 		});
 
 		form.find('[pattern]').each(function(element){
-			var pattern = new RegExp('^' + element.getAttribute('pattern') + '$');
+			var $el = $(element),
+				pattern = new RegExp('^' + $el.attr('pattern') + '$'),
+				value = $el.val();
 
-			if ($(element).val() && !pattern.test($(element).val())) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.pattern);
+			if (value && !pattern.test(value)) {
+				appendMessage($el, validationMessages.pattern);
 				valid = false;
 			}
 		});
 
 		form.find('[type="email"]').each(function(element){
-			var pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+			var $el = $(element),
+				pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+				value = $el.val();
 
-			if (($(element).val()) && !pattern.test($(element).val())) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.email);
+			if (value && !pattern.test(value)) {
+				appendMessage($el, validationMessages.email);
 				valid = false;
 			}
 		});
 
 		form.find('[type="url"]').each(function(element){
-			if ($(element).val() && !element.validity.valid) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.url);
+			var $el = $(element);
+
+			if ($el.val() && !element.validity.valid) {
+				appendMessage($el, validationMessages.url);
 				valid = false;
 			}
 		});
 
 		if (!valid){
+
 			form.addClass('has-errors');
 
-			var visibleErrorFields = $('.error input, .error textarea').filter(function(field) {
+			var visibleErrorFields = $('.error input, .error textarea, .error select').filter(function(field) {
 				return $(field).attr('type') !== 'hidden';
 			});
 
@@ -233,10 +242,11 @@ define('form', ['doc'], function($) {
 			if (configs && configs.messages) {
 				validationMessages = configs.messages;
 			}
-			var $form = toElements(form);
+			var $form = toElements(form),
+				self = this;
 			$form.attr('novalidate', true);
 			$form.throttle('submit', function() {
-				if (isValid.call(this, $form)) {
+				if (isValid.call(self, $form)) {
 					configs && configs.success && configs.success.apply(this, arguments);
 				} else {
 					configs && configs.error && configs.error.apply(this, arguments);

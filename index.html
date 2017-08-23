@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			color: #333;
+		}
+		label {
+			display: block;
+			margin-bottom: 0.25em;
+			margin-top: 1em;
+		}
+		input, select {
+			border: 1px solid #333;
+			padding: 0.25em;
+			font: inherit;
+		}
+		input[type="file"] {
+			border: none;
+			display: block;
+		}
+		fieldset {
+			border: none;
+			padding: 0;
+			margin: 1em 0;
+		}
+		legend {
+			font-size: 1.5em;
+			margin-bottom: 0.5em;
+			padding: 0;
+		}
+		button {
+			padding: 1em 3em;
+			background-color: #060;
+			border: none;
+			color: #FFF;
+			font: inherit;
+		}
+		button[type="reset"] {
+			background-color: #555;
+		}
+		button:focus, button:hover {
+			box-shadow: 0 0 3px #666;
+		}
+		.description {
+			font-size: 0.8em;
+		}
+		.validation-error {
+			margin: 0.5em;
+			padding: 0.5em;
+			font-size: 0.8em;
+			background-color: pink;
+			border: 1px solid darkred;
+		}
+		.field-description {
+			border: 1px solid #333;
+			background-color: #DDD;
+			padding: 0.5em;
+			margin: 0.5em;
+		}
+	</style>
+</head>
+<body>
+	<h1>oi</h1>
+	<form action="" method="post" id="teste">
+		<fieldset>
+			<legend>Dados pessoais</legend>
+
+			<label>Nome:
+				<input id="nome" name="nome" required>
+			</label>
+
+			<label>Email:
+				<input id="email" type="email" name="email" required>
+			</label>
+
+			<label>CPF (apenas números):
+				<input id="cpf" name="cpf" required pattern="[0-9]{11}" placeholder="00000000000">
+			</label>
+
+			<label>Escolaridade:
+				<select id="escolaridade" name="escolaridade" required>
+					<option></option>
+					<option value="0">Nenhuma</option>
+					<option value="1">Fundamental incompleto</option>
+					<option value="2">Fundamental completo</option>
+					<option value="3">Médio incompleto</option>
+					<option value="4">Médio completo</option>
+					<option value="5">Superior incompleto</option>
+					<option value="6">Superior completo</option>
+					<option value="7">Pós-graduação</option>
+				</select>
+			</label>
+
+			<label>
+				Escolha uma foto
+				<input required type="file" name="avatar" aria-description="avatar-description">
+			</label>
+
+			<label>Defina uma senha:
+				<input type="password" id="pass" name="pass" required aria-describedby="pass-description">
+			</label>
+			<span class="description" id="pass-description">A senha deve conter pelo menos 8 caracteres e deve misturar letras e números</span>
+
+			<label>Confirme a senha:
+				<input type="password" id="passconfirm" name="passconfirm" required>
+			</label>
+		</fieldset>
+
+		<fieldset>
+			<legend>Sexo</legend>
+			<label>
+				<input type="radio" name="sexo" value="M" required>
+				M
+			</label>
+			<label>
+				<input type="radio" name="sexo" value="F" required>
+				F
+			</label>
+			<label>
+				<input type="radio" name="sexo" value="O" required>
+				Outro
+			</label>
+		</fieldset>
+
+		<fieldset>
+			<legend>Endereço</legend>
+			<p>Vamos colocar uns AJAXes aqui depois</p>
+		</fieldset>
+
+		<button type="reset">Limpar</button>
+		<button>Enviar</button>
+	</form>
+
+	<script src='bower_components/async-define/async-define.js'></script>
+	<script src='bower_components/events-amd/events-amd.js'></script>
+	<script src='bower_components/doc-amd/doc.js'></script>
+	<script src='form.js'></script>
+	<script>
+		define(['doc', 'form'], function($, form) {
+			form.validate($('#teste'));
+		});
+	</script>
+</body>
+</html>
