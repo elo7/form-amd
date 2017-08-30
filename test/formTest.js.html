@@ -224,6 +224,28 @@
 						assert.equal($('#label6').find('.validation-message').isEmpty(), true);
 						assert.equal($('#label8').find('.validation-message').isEmpty(), true);
 					});
+
+					it('should add aria-describedby when invalid', function() {
+						form.validate('#formClearMessages');
+						$('#formClearMessages').trigger('submit');
+
+						assert.isDefined($('#label1 input').attr('aria-describedby'));
+						assert.isDefined($('#label2 input').attr('aria-describedby'));
+						assert.isDefined($('#label3 select').attr('aria-describedby'));
+						assert.isDefined($('#label4 input').attr('aria-describedby'));
+						assert.isDefined($('#label5 input').attr('aria-describedby'));
+						assert.isDefined($('#label6 input').attr('aria-describedby'));
+						assert.isDefined($('#label7 input').attr('aria-describedby'));
+						assert.isDefined($('#label8 input').attr('aria-describedby'));
+					});
+
+					it('should clear new validation messages and old aria-describedby\'s from invalid element', function() {
+						form.validate('#formClearMessages');
+						$('#formClearMessages').trigger('submit');
+						var description = $('#label1 input').attr('aria-describedby').split(' ').length;
+						$('#formClearMessages').trigger('submit');
+						assert.equal(description, $('#label1 input').attr('aria-describedby').split(' ').length);
+					});
 				});
 			});
 		</script>

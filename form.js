@@ -23,35 +23,35 @@ define('form', ['doc'], function($) {
 	}
 
 	var appendMessage = function($el, message) {
-		var label = $el.parent(),
-			description = $el.attr('aria-describedby');
+		var $formElement = $($el.find('input, select, textarea').first()),
+			description = $formElement.attr('aria-describedby');
 
-		if (label.find('.validation-message').isEmpty()) {
+		if ($el.find('.validation-message').isEmpty()) {
 			var now = + new Date();
-			label.addClass('validation').addClass('error');
+			$el.addClass('validation').addClass('error');
 
 			if (description) {
 				now += ' ' + description;
 			}
 
-			$el.attr('aria-describedby', now);
+			$formElement.attr('aria-describedby', now);
 
 			var messageTag = document.createElement('span');
 			messageTag.id = now;
 			$(messageTag).addClass('validation-message');
 
 			$(messageTag).text(message);
-			label.first().appendChild(messageTag);
+			$el.first().appendChild(messageTag);
 		}
 	};
 
-	var appendMessageWithArgs = function(label, formattedMessage) {
+	var appendMessageWithArgs = function($el, formattedMessage) {
 		for (var i = 2; i < arguments.length; i++) {
 			var index = (i - 2);
 			formattedMessage = formattedMessage.replace('{' + index + '}', arguments[i]);
 		}
 
-		appendMessage(label, formattedMessage);
+		appendMessage($el.parent(), formattedMessage);
 	};
 
 	var removeValidationErrors = function(form) {
@@ -86,7 +86,7 @@ define('form', ['doc'], function($) {
 		form.find('[required]').each(function(element){
 			var $el = $(element);
 			if (isEmpty($el.val())) {
-				appendMessage($el, validationMessages.required);
+				appendMessage($el.parent(), validationMessages.required);
 				valid = false;
 			}
 		});
@@ -119,7 +119,7 @@ define('form', ['doc'], function($) {
 				value = $el.val();
 
 			if (value && !pattern.test(value)) {
-				appendMessage($el, validationMessages.pattern);
+				appendMessage($el.parent(), validationMessages.pattern);
 				valid = false;
 			}
 		});
@@ -130,7 +130,7 @@ define('form', ['doc'], function($) {
 				value = $el.val();
 
 			if (value && !pattern.test(value)) {
-				appendMessage($el, validationMessages.email);
+				appendMessage($el.parent(), validationMessages.email);
 				valid = false;
 			}
 		});
@@ -139,7 +139,7 @@ define('form', ['doc'], function($) {
 			var $el = $(element);
 
 			if ($el.val() && !element.validity.valid) {
-				appendMessage($el, validationMessages.url);
+				appendMessage($el.parent(), validationMessages.url);
 				valid = false;
 			}
 		});
