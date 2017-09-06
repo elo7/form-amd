@@ -58,6 +58,8 @@ define('form', ['doc'], function($) {
 		form.removeClass('has-errors');
 		form.find('.validation-message').each(function(el) {
 			$(el).parent().removeClass('error');
+			var $field = $(el).parent().find('input,textarea,select');
+			removeAria($field);
 			$(el).removeItem();
 		});
 	};
@@ -159,16 +161,21 @@ define('form', ['doc'], function($) {
 		return valid;
 	};
 
+	var removeAria = function($el) {
+			var describedBy = $el.attr('aria-describedby');
+
+			if (describedBy) {
+				$el.attr('aria-describedby', describedBy.replace(/[\d+\s+?]/g, ''));
+			}
+	};
+
 	var addEventToClearErrorMessages = function(visibleErrorFields) {
 		visibleErrorFields.each(function(element){
 			$(element).on('input', function(event){
 				var target = event.target ? $(event.target) : $(window.event.srcElement),
-					parent = target.parent(),
-					describedBy = target.attr('aria-describedby');
+					parent = target.parent();
 
-				if (describedBy) {
-					target.attr('aria-describedby', describedBy.replace(/[\d+\s+?]/g, ''));
-				}
+				removeAria(target);
 
 				target.off('input', 'validationOff');
 				parent.removeClass('validation');

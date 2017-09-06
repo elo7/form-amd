@@ -52,6 +52,11 @@
 			<form id="formSucess" action="#">
 				<input value="a" required>
 			</form>
+
+			<form id="customAriaDescription" action="#">
+				<input value="a" aria-describedby="custom" required>
+				<span id="custom">This field has an custom description</span>
+			</form>
 		</div>
 
 		<script src="/node_modules/mocha/mocha.js"></script>
@@ -239,12 +244,36 @@
 						assert.isDefined($('#label8 input').attr('aria-describedby'));
 					});
 
-					it('should clear new validation messages and old aria-describedby\'s from invalid element', function() {
+					it('should clear new validation messages and old aria-describedby\'s from invalid element', function(done) {
 						form.validate('#formClearMessages');
 						$('#formClearMessages').trigger('submit');
-						var description = $('#label1 input').attr('aria-describedby').split(' ').length;
-						$('#formClearMessages').trigger('submit');
-						assert.equal(description, $('#label1 input').attr('aria-describedby').split(' ').length);
+						var description = $('#label1 input').attr('aria-describedby');
+
+						setTimeout(function() {
+							$('#formClearMessages').trigger('submit');
+							assert.equal(description, $('#label1 input').attr('aria-describedby'));
+							done();
+						}, 100);
+
+					});
+
+					it('should mantain custom aria-describedby when the field has validations errors', function() {
+						form.validate('#customAriaDescription');
+						$('#customAriaDescription').trigger('submit');
+						var description = $('#customAriaDescription input').attr('aria-describedby');
+						assert.equal('custom', description.replace(/\d+/, ''));
+					});
+
+					it('should mantain custom after fixed the field', function() {
+						form.validate('#customAriaDescription');
+						$('#customAriaDescription').trigger('submit');
+
+						var $input = $('#customAriaDescription input');
+						$input.val('agora tem valor');
+						$('#customAriaDescription').trigger('submit');
+
+						var description = $input.attr('aria-describedby');
+						assert.equal('custom', description);
 					});
 				});
 			});
