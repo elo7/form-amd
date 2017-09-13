@@ -275,6 +275,18 @@
 						var description = $input.attr('aria-describedby');
 						assert.equal('custom', description);
 					});
+
+					it('should remove aria-describedby when inputing in a invalid field', function() {
+						form.validate('#customAriaDescription');
+						$('#customAriaDescription').trigger('submit');
+
+						var $input = $('#customAriaDescription input');
+						$input.val('agora tem valor');
+						$input.trigger('input');
+
+						var description = $input.attr('aria-describedby');
+						assert.equal('custom', description);
+					});
 				});
 			});
 		</script>

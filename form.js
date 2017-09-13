@@ -162,11 +162,11 @@ define('form', ['doc'], function($) {
 	};
 
 	var removeAria = function($el) {
-			var describedBy = $el.attr('aria-describedby');
+		var describedBy = $el.attr('aria-describedby');
 
-			if (describedBy) {
-				$el.attr('aria-describedby', describedBy.replace(/[\d+\s+?]/g, ''));
-			}
+		if (describedBy) {
+			$el.attr('aria-describedby', describedBy.replace(/[\d+\s+?]/g, ''));
+		}
 	};
 
 	var addEventToClearErrorMessages = function(visibleErrorFields) {
