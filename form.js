@@ -27,14 +27,16 @@ define('form', ['doc'], function($) {
 			description = $formElement.attr('aria-describedby');
 
 		if ($el.find('.validation-message').isEmpty()) {
-			var now = + new Date();
+			var now = + new Date(),
+				updatedDescription = now;
+
 			$el.addClass('validation').addClass('error');
 
 			if (description) {
-				now += ' ' + description;
+				updatedDescription += ' ' + description;
 			}
 
-			$formElement.attr('aria-describedby', now);
+			$formElement.attr('aria-describedby', updatedDescription);
 
 			var messageTag = document.createElement('span');
 			messageTag.id = now;

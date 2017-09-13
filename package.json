@@ -11,7 +11,8 @@
     "pretest": "eslint *.js **/*.js",
     "test": "bash test.sh",
     "preinstall": "rm -vrf bower_components",
-    "postinstall": "bower install"
+    "postinstall": "bower install",
+    "test-server": "http-server -p 8888"
   },
   "author": "Elo7",
   "dependency": {
