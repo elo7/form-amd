@@ -233,10 +233,12 @@ define('form', ['doc'], function($) {
 			if (configs && configs.messages) {
 				validationMessages = configs.messages;
 			}
-			var $form = toElements(form);
+			var self = this,
+				$form = toElements(form);
+				
 			$form.attr('novalidate', true);
 			$form.throttle('submit', function() {
-				if (isValid.call(this, $form)) {
+				if (isValid.call(self, $form)) {
 					configs && configs.success && configs.success.apply(this, arguments);
 				} else {
 					configs && configs.error && configs.error.apply(this, arguments);
