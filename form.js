@@ -42,6 +42,16 @@ define('form', ['doc'], function($) {
 		appendMessage(label, formattedMessage);
 	};
 
+
+	var messageWithArgs = function(messageToFormat) {
+		for (var i = 1; i < arguments.length; i++) {
+			var index = (i - 1);
+			messageToFormat = messageToFormat.replace('{' + index + '}', arguments[i]);
+		}
+
+		return messageToFormat;
+	};
+
 	var removeValidationErrors = function(form) {
 		form.removeClass('has-errors');
 		form.find('.validation-message').each(function(el) {
@@ -184,8 +194,20 @@ define('form', ['doc'], function($) {
 		}
 	};
 
+	var getMinValidate = function($field) {
+		var min = $field.attr('min');
+
+		if ($field.val() && min !== null) {
+			var minValue = parseInt(min, 10);
+
+			if ($field.val() < minValue) {
+				return messageWithArgs(validationMessages.min, min);
+			}
+		}
+	};
+
 	var getRequiredValidate = function($field) {
-		if ($field.val() === '' && $field.attr('required') !== null) {
+		if (!$field.val() && $field.attr('required') !== null) {
 			return validationMessages.required;
 		}
 	};
@@ -297,7 +319,7 @@ define('form', ['doc'], function($) {
 
 		'validateField': function($field) {
 			return {
-				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getRequiredValidate($field) || '',
+				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getMinValidate($field) || getRequiredValidate($field) || '',
 				field: $field
 			};
 		}
