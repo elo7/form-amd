@@ -240,6 +240,34 @@
 						assert.deepEqual(formMessage, { message: '', field: $field });
 					});
 
+					it('should return a message when the field is of type email and is filled with an invalid email', function() {
+						var $field = $('input[name=test2]');
+						$field.val('notanemail');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'Please enter a valid email address', field: $field });
+					});
+
+					it('should not return a message when the field is of type email and is filled with a valid email', function() {
+						var $field = $('input[name=test2]');
+						$field.val('valid@email.com');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+
+					it('should not return a message when the field is not of type email and is filled with an invalid email', function() {
+						var $field = $('input[name=test1]');
+						$field.val('notanemail');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
 					it('should remove all error messages', function(){
 						form.validate('#formClearMessages');
 						$('#formClearMessages').trigger('submit');

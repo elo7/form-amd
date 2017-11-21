@@ -162,6 +162,20 @@ define('form', ['doc'], function($) {
 		return selectorOrElements;
 	};
 
+	var getEmailValidate = function($field) {
+		var emailPattern = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
+		if ($field.val() && $field.attr('type') === 'email' && !emailPattern.test($field.val())) {
+			return validationMessages.email;
+		}
+	};
+
+	var getRequiredValidate = function($field) {
+		if ($field.val() === '' && $field.attr('required') !== null) {
+			return validationMessages.required;
+		}
+	};
+
 	return {
 		/**
 		 * @param selectorOrElements CSS selector or doc object with selected elements
@@ -268,16 +282,10 @@ define('form', ['doc'], function($) {
 		},
 
 		'validateField': function($field) {
-			var obj = {
-				message: '',
+			return {
+				message: getEmailValidate($field) || getRequiredValidate($field) || '',
 				field: $field
 			};
-
-			if ($field.val() === '' && $field.attr('required') !== null) {
-				obj.message = validationMessages.required;
-			}
-
-			return obj;
 		}
 	};
 });
