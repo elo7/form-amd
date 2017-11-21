@@ -268,6 +268,24 @@
 						assert.deepEqual(formMessage, { message: '', field: $field });
 					});
 
+					it('should return a message when the field is of type url and is filled with an invalid url', function() {
+						var $field = $('input[name=test3]');
+						$field.val('notaurl@');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'Please enter a valid url', field: $field });
+					});
+
+					it('should not return a message when the field is of type url and is filled with a valid url', function() {
+						var $field = $('input[name=test3]');
+						$field.val('http://www.elo7.com.br');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
 					it('should remove all error messages', function(){
 						form.validate('#formClearMessages');
 						$('#formClearMessages').trigger('submit');

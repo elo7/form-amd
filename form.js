@@ -170,6 +170,12 @@ define('form', ['doc'], function($) {
 		}
 	};
 
+	var getUrlValidate = function($field) {
+		if ($field.val() && $field.attr('type') === 'url' && !$field.first().validity.valid) {
+			return validationMessages.url;
+		}
+	};
+
 	var getRequiredValidate = function($field) {
 		if ($field.val() === '' && $field.attr('required') !== null) {
 			return validationMessages.required;
@@ -283,7 +289,7 @@ define('form', ['doc'], function($) {
 
 		'validateField': function($field) {
 			return {
-				message: getEmailValidate($field) || getRequiredValidate($field) || '',
+				message: getEmailValidate($field) || getUrlValidate($field) || getRequiredValidate($field) || '',
 				field: $field
 			};
 		}
