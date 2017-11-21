@@ -265,7 +265,19 @@ define('form', ['doc'], function($) {
 		 */
 		'removeValidationErrors': function(form) {
 			removeValidationErrors($(form));
-		}
+		},
 
+		'validateField': function($field) {
+			var obj = {
+				message: '',
+				field: $field
+			};
+
+			if ($field.val() === '' && $field.attr('required') !== null) {
+				obj.message = validationMessages.required;
+			}
+
+			return obj;
+		}
 	};
 });
