@@ -435,6 +435,33 @@
 						assert.deepEqual(formMessage, { message: 'Please enter a value less than or equal to 2', field: $field });
 					});
 
+					it('should return a message when the field is filled with a value greater than maxlength', function() {
+						var $field = $('input[name=test4]');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'Please enter a value with max length less than or equal to 2', field: $field });
+					});
+
+					it('should not return a message when the field is filled with a value less than maxlength', function() {
+						var $field = $('input[name=test4]');
+
+						$field.val('a');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should not return a message when the field is empty, is not required and has maxlength value', function() {
+						var $field = $('input[name=test4]');
+						$field.val('');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
 					it('should remove all error messages', function(){
 						form.validate('#formClearMessages');
 						$('#formClearMessages').trigger('submit');

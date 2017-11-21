@@ -234,6 +234,17 @@ define('form', ['doc'], function($) {
 		});
 	};
 
+	var getMaxLengthValidate = function($field) {
+		var length = $field.attr('maxlength'),
+			fieldValue = $field.val();
+
+		if (fieldValue && $field.attr('maxlength') !== null) {
+			if (fieldValue.length > length) {
+				return messageWithArgs(validationMessages.maxlength, length);
+			}
+		}
+	};
+
 	var getRequiredValidate = function($field) {
 		if (!$field.val() && $field.attr('required') !== null) {
 			return validationMessages.required;
@@ -347,7 +358,7 @@ define('form', ['doc'], function($) {
 
 		'validateField': function($field) {
 			return {
-				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getMinValidate($field) || getMaxValidate($field) || getRequiredValidate($field) || '',
+				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getMinValidate($field) || getMaxValidate($field) || getMaxLengthValidate($field) || getRequiredValidate($field) || '',
 				field: $field
 			};
 		}
