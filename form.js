@@ -163,9 +163,9 @@ define('form', ['doc'], function($) {
 	};
 
 	var getEmailValidate = function($field) {
-		var emailPattern = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+		var pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
-		if ($field.val() && $field.attr('type') === 'email' && !emailPattern.test($field.val())) {
+		if ($field.val() && $field.attr('type') === 'email' && !pattern.test($field.val())) {
 			return validationMessages.email;
 		}
 	};
@@ -173,6 +173,14 @@ define('form', ['doc'], function($) {
 	var getUrlValidate = function($field) {
 		if ($field.val() && $field.attr('type') === 'url' && !$field.first().validity.valid) {
 			return validationMessages.url;
+		}
+	};
+
+	var getPatternValidate = function($field) {
+		var pattern = new RegExp('^' + $field.attr('pattern') + '$');
+
+		if ($field.val() && $field.attr('pattern') !== null && !pattern.test($field.val())) {
+			return validationMessages.pattern;
 		}
 	};
 
@@ -289,7 +297,7 @@ define('form', ['doc'], function($) {
 
 		'validateField': function($field) {
 			return {
-				message: getEmailValidate($field) || getUrlValidate($field) || getRequiredValidate($field) || '',
+				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getRequiredValidate($field) || '',
 				field: $field
 			};
 		}

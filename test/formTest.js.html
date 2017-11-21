@@ -39,13 +39,16 @@
 					<input value="a" min="3">
 				</label>
 				<label id="label6">
-					<input value="a" pattern="[\d\.,]+">
+					<input value="a" name="test6" pattern="[\d\.,]+">
 				</label>
 				<label id="label7">
 					<input value="a" required>
 				</label>
 				<label id="label8">
 					<input type="url" name="test3" value="test">
+				</label>
+				<label id="label9">
+					<input required pattern="\d{5}-\d{3}" name="test9">
 				</label>
 			</form>
 
@@ -258,6 +261,14 @@
 						assert.deepEqual(formMessage, { message: '', field: $field });
 					});
 
+					it('should not return a message when the field is of type email and is empty', function() {
+						var $field = $('input[name=test2]');
+						$field.val('');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
 
 					it('should not return a message when the field is not of type email and is filled with an invalid email', function() {
 						var $field = $('input[name=test1]');
@@ -284,6 +295,51 @@
 						var formMessage = form.validateField($field);
 
 						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should not return a message when the field is of type url and is empty', function() {
+						var $field = $('input[name=test3]');
+						$field.val('');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should return a message when the field has an invalid pattern', function() {
+						var $field = $('input[name=test6]');
+						$field.val('invalidpattern');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'Please enter a valid value', field: $field });
+					});
+
+					it('should not return a message when the field has a valid pattern', function() {
+						var $field = $('input[name=test6]');
+						$field.val('12.345,67');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should not return a message when the field is empty and has pattern attribute', function() {
+						var $field = $('input[name=test6]');
+						$field.val('');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should return a message when the field is empty, is required and has pattern attribute', function() {
+						var $field = $('input[name=test9]');
+						$field.val('');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'This field is required', field: $field });
 					});
 
 					it('should remove all error messages', function(){
