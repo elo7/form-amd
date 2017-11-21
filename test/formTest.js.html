@@ -33,7 +33,7 @@
 					<select required></select>
 				</label>
 				<label id="label4">
-					<input value="abc" maxlength="2">
+					<input value="abc" name="test4" maxlength="2">
 				</label>
 				<label id="label5">
 					<input value="a" name="test5" min="3">
@@ -49,6 +49,9 @@
 				</label>
 				<label id="label9">
 					<input required pattern="\d{5}-\d{3}" name="test9">
+				</label>
+				<label id="label10">
+					<input name="test10" max="2">
 				</label>
 			</form>
 
@@ -376,6 +379,60 @@
 						var formMessage = form.validateField($field);
 
 						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should return a message when the field has min attribute and value is a text', function() {
+						var $field = $('input[name=test5]');
+						$field.val('elo');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'Please enter a value greater than or equal to 3', field: $field });
+					});
+
+					it('should return a message when the field is filled with a value greater than max', function() {
+						var $field = $('input[name=test10]');
+						$field.val('3');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'Please enter a value less than or equal to 2', field: $field });
+					});
+
+					it('should not return a message when the field is filled with a value less than max', function() {
+						var $field = $('input[name=test10]');
+						$field.val('1');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should not return a message when the field is filled with a value equal to max', function() {
+						var $field = $('input[name=test10]');
+						$field.val('2');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should not return a message when the field is empty, is not required and has max value', function() {
+						var $field = $('input[name=test10]');
+						$field.val('');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: '', field: $field });
+					});
+
+					it('should return a message when the field has max attribute and value is a text', function() {
+						var $field = $('input[name=test10]');
+						$field.val('elo');
+
+						var formMessage = form.validateField($field);
+
+						assert.deepEqual(formMessage, { message: 'Please enter a value less than or equal to 2', field: $field });
 					});
 
 					it('should remove all error messages', function(){

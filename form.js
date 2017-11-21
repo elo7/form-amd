@@ -64,6 +64,7 @@ define('form', ['doc'], function($) {
 		'required': 'This field is required',
 		'min': 'Please enter a value greater than or equal to {0}',
 		'maxlength': 'Please enter a value with max length less than or equal to {0}',
+		'max': 'Please enter a value less than or equal to {0}',
 		'pattern': 'Please enter a valid value',
 		'email': 'Please enter a valid email address',
 		'url': 'Please enter a valid url'
@@ -173,35 +174,55 @@ define('form', ['doc'], function($) {
 	};
 
 	var getEmailValidate = function($field) {
-		var pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+		var fieldValue = $field.val(),
+			pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
-		if ($field.val() && $field.attr('type') === 'email' && !pattern.test($field.val())) {
+		if (fieldValue && $field.attr('type') === 'email' && !pattern.test(fieldValue)) {
 			return validationMessages.email;
 		}
 	};
 
 	var getUrlValidate = function($field) {
-		if ($field.val() && $field.attr('type') === 'url' && !$field.first().validity.valid) {
+		var fieldValue = $field.val();
+
+		if (fieldValue && $field.attr('type') === 'url' && !$field.first().validity.valid) {
 			return validationMessages.url;
 		}
 	};
 
 	var getPatternValidate = function($field) {
-		var pattern = new RegExp('^' + $field.attr('pattern') + '$');
+		var fieldValue = $field.val(),
+			pattern = new RegExp('^' + $field.attr('pattern') + '$');
 
-		if ($field.val() && $field.attr('pattern') !== null && !pattern.test($field.val())) {
+		if (fieldValue && $field.attr('pattern') !== null && !pattern.test(fieldValue)) {
 			return validationMessages.pattern;
 		}
 	};
 
 	var getMinValidate = function($field) {
-		var min = $field.attr('min');
+		var fieldValue = $field.val(),
+			min = $field.attr('min');
 
-		if ($field.val() && min !== null) {
-			var minValue = parseInt(min, 10);
+		if (fieldValue && min !== null) {
+			var minValue = parseInt(min, 10),
+				numericFieldValue = parseInt(fieldValue, 10);
 
-			if ($field.val() < minValue) {
+			if (isNaN(numericFieldValue) || numericFieldValue < minValue) {
 				return messageWithArgs(validationMessages.min, min);
+			}
+		}
+	};
+
+	var getMaxValidate = function($field) {
+		var fieldValue = $field.val(),
+			max = $field.attr('max');
+
+		if (fieldValue && max !== null) {
+			var maxValue = parseInt(max, 10),
+				numericFieldValue = parseInt(fieldValue, 10);
+
+			if (isNaN(numericFieldValue) || numericFieldValue > maxValue) {
+				return messageWithArgs(validationMessages.max, max);
 			}
 		}
 	};
@@ -319,7 +340,7 @@ define('form', ['doc'], function($) {
 
 		'validateField': function($field) {
 			return {
-				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getMinValidate($field) || getRequiredValidate($field) || '',
+				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getMinValidate($field) || getMaxValidate($field) || getRequiredValidate($field) || '',
 				field: $field
 			};
 		}
