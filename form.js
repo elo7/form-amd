@@ -199,32 +199,39 @@ define('form', ['doc'], function($) {
 		}
 	};
 
-	var getMinValidate = function($field) {
+	var getMaxOrMinMessage = function($field, condition) {
 		var fieldValue = $field.val(),
-			min = $field.attr('min');
+			type = $field.attr('max') ? 'max' : 'min',
+			typeValue = $field.attr(type);
 
-		if (fieldValue && min !== null) {
-			var minValue = parseInt(min, 10),
+		if (fieldValue && typeValue !== null) {
+			var numericTypeValue = parseInt(typeValue, 10),
 				numericFieldValue = parseInt(fieldValue, 10);
 
-			if (isNaN(numericFieldValue) || numericFieldValue < minValue) {
-				return messageWithArgs(validationMessages.min, min);
+			if (isNaN(numericFieldValue) || condition(numericFieldValue, numericTypeValue)) {
+				return messageWithArgs(validationMessages[type], typeValue);
 			}
 		}
 	};
 
-	var getMaxValidate = function($field) {
-		var fieldValue = $field.val(),
-			max = $field.attr('max');
-
-		if (fieldValue && max !== null) {
-			var maxValue = parseInt(max, 10),
-				numericFieldValue = parseInt(fieldValue, 10);
-
-			if (isNaN(numericFieldValue) || numericFieldValue > maxValue) {
-				return messageWithArgs(validationMessages.max, max);
-			}
+	var getMinValidate = function($field) {
+		if (!$field.attr('min')) {
+			return false;
 		}
+
+		return getMaxOrMinMessage($field, function(numericFieldValue, numericTypeValue) {
+			return numericFieldValue < numericTypeValue;
+		});
+	};
+
+	var getMaxValidate = function($field) {
+		if (!$field.attr('max')) {
+			return false;
+		}
+
+		return getMaxOrMinMessage($field, function(numericFieldValue, numericTypeValue) {
+			return numericFieldValue > numericTypeValue;
+		});
 	};
 
 	var getRequiredValidate = function($field) {
