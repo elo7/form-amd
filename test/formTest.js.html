@@ -140,26 +140,6 @@
 						assert.equal($('#inputFocus').first(), document.activeElement);
 					});
 
-					it('should insert error message for all elements', function(){
-						form.validate('#formClearMessages');
-						$('#formClearMessages').trigger('submit');
-
-						assert.equal($('#label1').find('.validation-message').isEmpty(), false);
-						assert.equal($('#label1').find('.validation-message').text(), "This field is required");
-						assert.equal($('#label2').find('.validation-message').isEmpty(), false);
-						assert.equal($('#label2').find('.validation-message').text(), "Please enter a valid email address");
-						assert.equal($('#label3').find('.validation-message').isEmpty(), false);
-						assert.equal($('#label3').find('.validation-message').text(), "This field is required");
-						assert.equal($('#label4').find('.validation-message').isEmpty(), false);
-						assert.equal($('#label4').find('.validation-message').text(), "Please enter a value with max length less than or equal to 2");
-						assert.equal($('#label5').find('.validation-message').isEmpty(), false);
-						assert.equal($('#label5').find('.validation-message').text(), "Please enter a value greater than or equal to 3");
-						assert.equal($('#label6').find('.validation-message').isEmpty(), false);
-						assert.equal($('#label6').find('.validation-message').text(), "Please enter a valid value");
-						assert.equal($('#label7').find('.validation-message').isEmpty(), true);
-						assert.equal($('#label8').find('.validation-message').text(), "Please enter a valid url");
-					});
-
 					// it('should insert error custom message for all elements', function(){
 					// 	var messages = {
 					// 		'required': 'Preencha este campo, por favor!',
@@ -203,19 +183,6 @@
 						$('#formClearMessages').trigger('submit');
 
 						assert.equal(true, expected);
-					});
-
-					it('should append message inside label', function(){
-						form.appendMessage('#labelAppendMessage', 'Teste');
-
-						assert.equal($('#labelAppendMessage').find('.validation-message').isEmpty(), false);
-					});
-
-					it('should append message inside label and remove the message when input event was dispatch', function(){
-						form.appendMessage('#labelAppendMessage', 'Teste');
-						$('#labelAppendMessage input').trigger('input');
-
-						assert.equal($('#labelAppendMessage').find('.validation-message').isEmpty(), true);
 					});
 
 					it('should return a message when the field is empty and required', function() {

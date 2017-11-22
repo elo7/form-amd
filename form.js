@@ -33,16 +33,6 @@ define('form', ['doc'], function($) {
 		}
 	};
 
-	var appendMessageWithArgs = function(label, formattedMessage) {
-		for (var i = 2; i < arguments.length; i++) {
-			var index = (i - 2);
-			formattedMessage = formattedMessage.replace('{' + index + '}', arguments[i]);
-		}
-
-		appendMessage(label, formattedMessage);
-	};
-
-
 	var messageWithArgs = function(messageToFormat) {
 		for (var i = 1; i < arguments.length; i++) {
 			var index = (i - 1);
@@ -68,109 +58,6 @@ define('form', ['doc'], function($) {
 		'pattern': 'Please enter a valid value',
 		'email': 'Please enter a valid email address',
 		'url': 'Please enter a valid url'
-	};
-
-	var isEmpty = function(value) {
-		if (value === null || value === undefined || value.trim() === '') {
-			return true;
-		}
-		return false;
-	};
-
-	var isValid = function(form) {
-		var valid = true;
-
-		removeValidationErrors(form);
-
-		form.find('[required]').each(function(element){
-			if (isEmpty($(element).val())) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.required);
-				valid = false;
-			}
-		});
-
-		form.find('[min]').each(function(element){
-			var length = parseInt(element.getAttribute('min')),
-				value = $(element).val().trim();
-
-			if (value && value.length < length) {
-				var parent = element.parentElement;
-				appendMessageWithArgs($(parent), validationMessages.min, length);
-				valid = false;
-			}
-		});
-
-		form.find('[maxlength]').each(function(element){
-			var length = parseInt(element.getAttribute('maxlength'));
-
-			if ($(element).val() && $(element).val().length > length) {
-				var parent = element.parentElement;
-				appendMessageWithArgs($(parent), validationMessages.maxlength, length);
-				valid = false;
-			}
-		});
-
-		form.find('[pattern]').each(function(element){
-			var pattern = new RegExp('^' + element.getAttribute('pattern') + '$');
-
-			if ($(element).val() && !pattern.test($(element).val())) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.pattern);
-				valid = false;
-			}
-		});
-
-		form.find('[type="email"]').each(function(element){
-			var pattern = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-
-			if (($(element).val()) && !pattern.test($(element).val())) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.email);
-				valid = false;
-			}
-		});
-
-		form.find('[type="url"]').each(function(element){
-			if ($(element).val() && !element.validity.valid) {
-				var parent = element.parentElement;
-				appendMessage($(parent), validationMessages.url);
-				valid = false;
-			}
-		});
-
-		if (!valid){
-			form.addClass('has-errors');
-
-			var visibleErrorFields = form.find('.error input, .error textarea').filter(function(field) {
-				return $(field).attr('type') !== 'hidden';
-			});
-
-			addEventToClearErrorMessages(visibleErrorFields);
-			this.focus(visibleErrorFields.first());
-		}
-
-		return valid;
-	};
-
-	var addEventToClearErrorMessages = function(visibleErrorFields) {
-		visibleErrorFields.each(function(element){
-			$(element).on('input', function(event){
-				var target = event.target ? $(event.target) : $(window.event.srcElement),
-					parent = target.parent();
-				target.off('input', 'validationOff');
-				parent.removeClass('validation');
-				parent.removeClass('error');
-				parent.find('.validation-message').removeItem();
-			}, 'validationOff');
-		});
-	};
-
-	var toElements = function(selectorOrElements) {
-		if (typeof selectorOrElements === 'string') {
-			return $(selectorOrElements);
-		}
-		return selectorOrElements;
 	};
 
 	var getEmailValidate = function($field) {
@@ -249,6 +136,53 @@ define('form', ['doc'], function($) {
 		if (!$field.val() && $field.attr('required') !== null) {
 			return validationMessages.required;
 		}
+	};
+
+	var isValid = function(form) {
+		var valid = true;
+
+		removeValidationErrors(form);
+
+		form.find('input').each(function(el) {
+			var $input = $(el);
+
+			if (getRequiredValidate($input) || getEmailValidate($input) || getUrlValidate($input) || getPatternValidate($input) || getMinValidate($input) || getMaxValidate($input) || getMaxLengthValidate($input)) {
+				valid = false;
+			}
+		});
+
+		if (!valid){
+			form.addClass('has-errors');
+
+			var visibleErrorFields = form.find('.error input, .error textarea').filter(function(field) {
+				return $(field).attr('type') !== 'hidden';
+			});
+
+			addEventToClearErrorMessages(visibleErrorFields);
+			this.focus(visibleErrorFields.first());
+		}
+
+		return valid;
+	};
+
+	var addEventToClearErrorMessages = function(visibleErrorFields) {
+		visibleErrorFields.each(function(element){
+			$(element).on('input', function(event){
+				var target = event.target ? $(event.target) : $(window.event.srcElement),
+					parent = target.parent();
+				target.off('input', 'validationOff');
+				parent.removeClass('validation');
+				parent.removeClass('error');
+				parent.find('.validation-message').removeItem();
+			}, 'validationOff');
+		});
+	};
+
+	var toElements = function(selectorOrElements) {
+		if (typeof selectorOrElements === 'string') {
+			return $(selectorOrElements);
+		}
+		return selectorOrElements;
 	};
 
 	return {
