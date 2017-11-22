@@ -22,17 +22,6 @@ define('form', ['doc'], function($) {
 		};
 	}
 
-	var appendMessage = function(label, message) {
-		if (label.find('.validation-message').isEmpty()) {
-			label.addClass('validation').addClass('error');
-			var messageTag = document.createElement('span');
-			$(messageTag).addClass('validation-message');
-
-			$(messageTag).text(message);
-			label.first().appendChild(messageTag);
-		}
-	};
-
 	var messageWithArgs = function(messageToFormat) {
 		for (var i = 1; i < arguments.length; i++) {
 			var index = (i - 1);
@@ -40,14 +29,6 @@ define('form', ['doc'], function($) {
 		}
 
 		return messageToFormat;
-	};
-
-	var removeValidationErrors = function(form) {
-		form.removeClass('has-errors');
-		form.find('.validation-message').each(function(el) {
-			$(el).parent().removeClass('error');
-			$(el).removeItem();
-		});
 	};
 
 	var validationMessages = {
@@ -141,8 +122,6 @@ define('form', ['doc'], function($) {
 	var isValid = function(form) {
 		var valid = true;
 
-		removeValidationErrors(form);
-
 		form.find('input').each(function(el) {
 			var $input = $(el);
 
@@ -151,31 +130,7 @@ define('form', ['doc'], function($) {
 			}
 		});
 
-		if (!valid){
-			form.addClass('has-errors');
-
-			var visibleErrorFields = form.find('.error input, .error textarea').filter(function(field) {
-				return $(field).attr('type') !== 'hidden';
-			});
-
-			addEventToClearErrorMessages(visibleErrorFields);
-			this.focus(visibleErrorFields.first());
-		}
-
 		return valid;
-	};
-
-	var addEventToClearErrorMessages = function(visibleErrorFields) {
-		visibleErrorFields.each(function(element){
-			$(element).on('input', function(event){
-				var target = event.target ? $(event.target) : $(window.event.srcElement),
-					parent = target.parent();
-				target.off('input', 'validationOff');
-				parent.removeClass('validation');
-				parent.removeClass('error');
-				parent.find('.validation-message').removeItem();
-			}, 'validationOff');
-		});
 	};
 
 	var toElements = function(selectorOrElements) {
@@ -268,28 +223,11 @@ define('form', ['doc'], function($) {
 		},
 
 		/**
-		 * @param label anchor
-		 * @param interpolated message
+		 * @param $field
 		 *
 		 * Usage example:
-		 * 	form.appendMessage(<INPUT_LABEL_ANCHOR>, INTERPOLATED_MESSAGE);
+		 * 	form.validateField(<FIELD_ELEMENT>);
 		 */
-		'appendMessage': function(label, message) {
-			var $label = $(label);
-			appendMessage($label, message);
-			addEventToClearErrorMessages($label.find('input'));
-		},
-
-		/**
-		 * @param form
-		 *
-		 * Usage example:
-		 * 	form.removeValidationErrors(<FORM_ELEMENT>);
-		 */
-		'removeValidationErrors': function(form) {
-			removeValidationErrors($(form));
-		},
-
 		'validateField': function($field) {
 			return {
 				message: getEmailValidate($field) || getUrlValidate($field) || getPatternValidate($field) || getMinValidate($field) || getMaxValidate($field) || getMaxLengthValidate($field) || getRequiredValidate($field) || '',

@@ -445,54 +445,6 @@
 						assert.deepEqual(form.validateField($url), { message: 'Insira uma url válida, por favor!', field: $url });
 						assert.deepEqual(form.validateField($max), { message: 'Insira um valor menor ou igual a 2, por favor!', field: $max });
 					});
-
-					it('should remove all error messages', function(){
-						form.validate('#formClearMessages');
-						$('#formClearMessages').trigger('submit');
-
-						form.removeValidationErrors('#formClearMessages');
-
-						assert.equal($('#label1').find('.validation-message').isEmpty(), true);
-						assert.equal($('#label2').find('.validation-message').isEmpty(), true);
-						assert.equal($('#label3').find('.validation-message').isEmpty(), true);
-						assert.equal($('#label4').find('.validation-message').isEmpty(), true);
-						assert.equal($('#label5').find('.validation-message').isEmpty(), true);
-						assert.equal($('#label6').find('.validation-message').isEmpty(), true);
-						assert.equal($('#label8').find('.validation-message').isEmpty(), true);
-					});
-
-					describe('Form with shadow root', function() {
-
-						var $root, $form;
-
-						before(function() {
-							if(!HTMLElement.prototype.createShadowRoot) {
-								this.skip();
-							}
-							$root = $($('#form-shadow-root').first().createShadowRoot());
-							$root.append($('#formClearMessages').first().cloneNode(true));
-							$form = $root.find('#formClearMessages');
-						});
-
-						it('should clear validation message', function() {
-							form.validate($form);
-							$form.trigger('submit');
-
-							assert.equal($root.find('.validation-message').isEmpty(), false);
-
-							form.removeValidationErrors($form.first());
-							assert.equal($root.find('.validation-message').isEmpty(), true);
-						});
-
-						it('should clear validation message after input', function() {
-							form.validate($form);
-							$form.trigger('submit');
-
-							assert.equal($root.find('#label1 .validation-message').isEmpty(), false);
-							$form.find('#label1 input').trigger('input');
-							assert.equal($root.find('#label1 .validation-message').isEmpty(), true);
-						});
-					});
 				});
 			});
 		</script>
@@ -508,8 +460,6 @@
 					'submitOnBlur',
 					'focus',
 					'validate',
-					'appendMessage',
-					'removeValidationErrors',
 					'validateField'
 				];
 			}
