@@ -63,105 +63,134 @@
 		</div>
 
 		<script src="/node_modules/mocha/mocha.js"></script>
-		<script src="/node_modules/proclaim/lib/proclaim.js"></script>
-		<script src="/test/helpers.js"></script>
+		<script src="/node_modules/chai/chai.js"></script>
 
 		<script src="/bower_components/async-define/async-define.js"></script>
 		<script src="/bower_components/events-amd/events-amd.js"></script>
 		<script src="/bower_components/doc-amd/doc.js"></script>
 		<script src="/form.js"></script>
 		<script>
-			var assert = window.proclaim;
+			var expect = window.chai.expect;
 
 			mocha.ui("bdd");
 
-			define(['doc', 'form'], function($, form) {
+			define(['doc', 'form'], function($, Form) {
 				describe('Form', function(){
+					var form;
+
+					beforeEach(function() {
+						form = new Form();
+					});
+
 					it('should contains all known methods', function(){
 						var current = [];
-						for(var methodName in form) current.push(methodName);
-						assert.equal(arrayEquals(knownMethods(), current), true);
+						for (var methodName in form) current.push(methodName);
+						expect(knownMethods()).to.include.members(current);
+						expect(current).to.include.members(knownMethods());
 					});
 
 					it('should submit form when event change was dispatch on element with specified selector', function(){
-						var expected = false;
+						var called = false;
 						form.submitOnChange('#selectChange');
 						$('#submitOnChange').on('submit', function(e){
 							e.preventDefault ? e.preventDefault() : e.returnValue = false;
-							expected = true;
+							called = true;
 						});
 						$('#selectChange').trigger('change');
 
-						assert.equal(true, expected);
+						expect(called).to.be.true;
 					});
 
 					it('should submit form when event change was dispatch on element passed as parameter', function(){
-						var expected = false;
+						var called = false;
 						var $selectChange = $('#selectChange');
 						form.submitOnChange($selectChange);
 						$('#submitOnChange').on('submit', function(e){
 							e.preventDefault ? e.preventDefault() : e.returnValue = false;
-							expected = true;
+							called = true;
 						});
 						$selectChange.trigger('change');
 
-						assert.equal(true, expected);
+						expect(called).to.be.true;
 					});
 
 					it('should call beforeSubmit when select tag event change was dispatch', function(){
-						var expected = false;
+						var called = false;
 						form.submitOnChange('#selectChange', function(){
-							expected = true;
+							called = true;
 						});
 						$('#submitOnChange').on('submit', function(e){
 							e.preventDefault ? e.preventDefault() : e.returnValue = false;
 						});
 						$('#selectChange').trigger('change');
 
-						assert.equal(true, expected);
+						expect(called).to.be.true;
 					});
 
 					it('should submit form when input tag event blur was dispatch', function(){
-						var expected = false;
+						var called = false;
 						form.submitOnBlur('#inputBlur');
 						form.focus('#inputBlur');
 						$('#submitOnBlur').on('submit', function(e){
 							e.preventDefault ? e.preventDefault() : e.returnValue = false;
-							expected = true;
+							called = true;
 						});
 						$('#inputBlur').trigger('blur');
 
-						assert.equal(true, expected);
+						expect(called).to.be.true;
 					});
 
 					it('should focus element', function(){
 						form.focus('#inputFocus');
 
-						assert.equal($('#inputFocus').first(), document.activeElement);
+						expect($('#inputFocus').first()).to.equal(document.activeElement);
 					});
 
 					it('should call success callback', function(){
-						var expected = false;
+						var called = false;
 						form.validate('#formSucess', {
 							success: function(){
-								expected = true;
+								called = true;
 							}
 						});
 						$('#formSucess').trigger('submit');
 
-						assert.equal(true, expected);
+						expect(called).to.be.true;
 					});
 
-					it('should call error callback', function(){
-						var expected = false;
+					it('should call error callback with error messages', function(){
+						var $required = $('input[name=test1]'),
+							$email = $('input[name=test2]'),
+							$maxlength = $('input[name=test4]'),
+							$min = $('input[name=test5]'),
+							$pattern = $('input[name=test6]'),
+							$url = $('input[name=test8]'),
+							$max = $('input[name=test10]'),
+							called = false,
+							errors = [];
+
+						$required.val('');
+						$email.val('elo7@');
+						$maxlength.val('abc');
+						$pattern.val('a');
+						$url.val('elo7.');
+
 						form.validate('#formClearMessages', {
-							error: function(){
-								expected = true;
+							error: function(result){
+								called = true;
+								errors = result;
 							}
 						});
 						$('#formClearMessages').trigger('submit');
 
-						assert.equal(true, expected);
+						expect(called).to.be.true;
+						expect(errors).to.deep.include({ message: 'Preencha este campo logo!', field: $required });
+						expect(errors).to.deep.include({ message: 'Insira um e-mail válido, por favor!', field: $email });
+						expect(errors).to.deep.include({ message: 'Insira no máximo 2 caracteres, por favor!', field: $maxlength });
+						expect(errors).to.deep.include({ message: 'Insira no mínimo 3 caracteres, por favor!', field: $min });
+						expect(errors).to.deep.include({ message: 'Insira um valor válido, por favor!', field: $pattern });
+						expect(errors).to.deep.include({ message: 'Insira uma url válida, por favor!', field: $url });
+						expect(errors).to.deep.include({ message: 'Insira um valor menor ou igual a 2, por favor!', field: $max });
 					});
 
 					it('should return a message when the field is empty and required', function() {
@@ -170,7 +199,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'This field is required', field: $field });
+						expect(formMessage).to.eql({ message: 'This field is required', field: $field });
 					});
 
 					it('should not return a message when the field is not empty and is required', function() {
@@ -179,7 +208,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 
@@ -189,7 +218,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should return a message when the field is of type email and is filled with an invalid email', function() {
@@ -198,7 +227,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a valid email address', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a valid email address', field: $field });
 					});
 
 					it('should not return a message when the field is of type email and is filled with a valid email', function() {
@@ -207,7 +236,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is of type email and is empty', function() {
@@ -216,7 +245,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is not of type email and is filled with an invalid email', function() {
@@ -225,7 +254,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should return a message when the field is of type url and is filled with an invalid url', function() {
@@ -234,7 +263,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a valid url', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a valid url', field: $field });
 					});
 
 					it('should not return a message when the field is of type url and is filled with a valid url', function() {
@@ -243,7 +272,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is of type url and is empty', function() {
@@ -252,7 +281,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should return a message when the field has an invalid pattern', function() {
@@ -261,7 +290,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a valid value', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a valid value', field: $field });
 					});
 
 					it('should not return a message when the field has a valid pattern', function() {
@@ -270,7 +299,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is empty and has pattern attribute', function() {
@@ -279,7 +308,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should return a message when the field is empty, is required and has pattern attribute', function() {
@@ -288,7 +317,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'This field is required', field: $field });
+						expect(formMessage).to.eql({ message: 'This field is required', field: $field });
 					});
 
 					it('should return a message when the field is filled with a value less than min', function() {
@@ -297,7 +326,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a value greater than or equal to 3', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a value greater than or equal to 3', field: $field });
 					});
 
 					it('should not return a message when the field is filled with a value greater than min', function() {
@@ -306,7 +335,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is filled with a value equal to min', function() {
@@ -315,7 +344,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is empty, is not required and has min value', function() {
@@ -324,7 +353,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should return a message when the field has min attribute and value is a text', function() {
@@ -333,7 +362,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a value greater than or equal to 3', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a value greater than or equal to 3', field: $field });
 					});
 
 					it('should return a message when the field is filled with a value greater than max', function() {
@@ -342,7 +371,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a value less than or equal to 2', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a value less than or equal to 2', field: $field });
 					});
 
 					it('should not return a message when the field is filled with a value less than max', function() {
@@ -351,7 +380,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is filled with a value equal to max', function() {
@@ -360,7 +389,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is empty, is not required and has max value', function() {
@@ -369,7 +398,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should return a message when the field has max attribute and value is a text', function() {
@@ -378,7 +407,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a value less than or equal to 2', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a value less than or equal to 2', field: $field });
 					});
 
 					it('should return a message when the field is filled with a value greater than maxlength', function() {
@@ -386,7 +415,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: 'Please enter a value with max length less than or equal to 2', field: $field });
+						expect(formMessage).to.eql({ message: 'Please enter a value with max length less than or equal to 2', field: $field });
 					});
 
 					it('should not return a message when the field is filled with a value less than maxlength', function() {
@@ -396,7 +425,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should not return a message when the field is empty, is not required and has maxlength value', function() {
@@ -405,7 +434,7 @@
 
 						var formMessage = form.validateField($field);
 
-						assert.deepEqual(formMessage, { message: '', field: $field });
+						expect(formMessage).to.eql({ field: $field });
 					});
 
 					it('should insert error custom message for all elements', function () {
@@ -425,7 +454,9 @@
 							$min = $('input[name=test5]'),
 							$pattern = $('input[name=test6]'),
 							$url = $('input[name=test8]'),
-							$max = $('input[name=test10]');
+							$max = $('input[name=test10]'),
+							called = false,
+							errors = [];
 
 						$required.val('');
 						$email.val('elo7@');
@@ -433,17 +464,24 @@
 						$pattern.val('a');
 						$url.val('elo7.');
 
-						form.validate('#formClearMessages', { messages: messages });
+						form = new Form({ messages: messages });
+						form.validate('#formClearMessages', {
+							error: function(result) {
+								called = true;
+								errors = result;
+							}
+						});
 
 						$('#formClearMessages').trigger('submit');
 
-						assert.deepEqual(form.validateField($required), { message: 'Preencha este campo logo!', field: $required });
-						assert.deepEqual(form.validateField($email), { message: 'Insira um e-mail válido, por favor!', field: $email });
-						assert.deepEqual(form.validateField($maxlength), { message: 'Insira no máximo 2 caracteres, por favor!', field: $maxlength });
-						assert.deepEqual(form.validateField($min), { message: 'Insira no mínimo 3 caracteres, por favor!', field: $min });
-						assert.deepEqual(form.validateField($pattern), { message: 'Insira um valor válido, por favor!', field: $pattern });
-						assert.deepEqual(form.validateField($url), { message: 'Insira uma url válida, por favor!', field: $url });
-						assert.deepEqual(form.validateField($max), { message: 'Insira um valor menor ou igual a 2, por favor!', field: $max });
+						expect(called).to.be.true;
+						expect(errors[0]).to.eql({ field: $required, message: 'Preencha este campo logo!' });
+						expect(errors).to.deep.include({ message: 'Insira um e-mail válido, por favor!', field: $email });
+						expect(errors).to.deep.include({ message: 'Insira no máximo 2 caracteres, por favor!', field: $maxlength });
+						expect(errors).to.deep.include({ message: 'Insira no mínimo 3 caracteres, por favor!', field: $min });
+						expect(errors).to.deep.include({ message: 'Insira um valor válido, por favor!', field: $pattern });
+						expect(errors).to.deep.include({ message: 'Insira uma url válida, por favor!', field: $url });
+						expect(errors).to.deep.include({ message: 'Insira um valor menor ou igual a 2, por favor!', field: $max });
 					});
 				});
 			});
