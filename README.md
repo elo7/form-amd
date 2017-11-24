@@ -2,7 +2,7 @@
 
 _Form-amd library_
 
-form.js is a small library to help form manipulations and validation. This library uses [amd](http://en.wikipedia.org/wiki/Asynchronous_module_definition) structure.
+form.js is a small library to help form validation. This library uses [amd](http://en.wikipedia.org/wiki/Asynchronous_module_definition) structure.
 
 [![Build Status](https://travis-ci.org/elo7/form-amd.svg?branch=master)](https://travis-ci.org/elo7/form-amd)
 
@@ -40,13 +40,13 @@ define(['form'], function(form) {
 ```
 
 #### submitOnBlur
-`.submitOnBlur(selector)`
+`.submitOnBlur(selectorOrDocElement)`
 
 ###### Description:
 Submit the parent form when event **blur** is triggered.
 
 ###### Parameters:
-> selector: String
+> selectorOrDocElement: doc-amd object or String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
 
 ###### Sample:
 ``` js
@@ -56,18 +56,18 @@ define(['form'], function(form) {
 ```
 
 #### focus
-`.focus(selector)`
+`.focus(selectorOrElements)`
 
 ###### Description:
 Focus on selected element. If the device is mobile, it calls **scrollIntoView** function.
 
 ###### Parameters:
-> selector: String 
+> selectorOrDocElement: doc-amd object or String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-  form.focus('#input'); //Focus on the element #input
+  form.focus($('#input')); //Focus on the element #input
 });
 ```
 
@@ -80,7 +80,7 @@ Validate the form using almost all the html5 attributes validate spec.
 ###### Parameters:
 > selectorOrDocElement: doc-amd object or String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
 
-> object: Object //An object with the properties _messages_ ("required", "min", "maxlength", "pattern" or "email"), _success_ (function callback) or _error_ (function callback)
+> object: Object //An object with the properties _messages_ ("required", "min", "max", "maxlength", "pattern" or "email"), _success_ (function callback) or _error_ (function callback)
 
 ###### Sample:
 ``` js
@@ -90,6 +90,7 @@ define(['form'], function(form) {
     messages: {
       'required': 'Field required.',
       'min': 'Enter a value greater than or equal to {0}.',
+      'max': 'Please enter a value greater than or equal to {0}.',
       'maxlength': 'Enter a value with max length less than or equal to {0}.',
       'pattern': 'Enter a valid value.',
       'email': 'Enter a valid email address.'
@@ -108,42 +109,25 @@ define(['form'], function(form) {
 ``` txt
  required: This field is required
  min: Please enter a value greater than or equal to {0}
+ max: 'Please enter a value greater than or equal to {0}'
  maxlength: Please enter a value with max length less than or equal to {0}
  pattern: Please enter a valid value
  email: Please enter a valid email address
 ```
 
-#### appendMessage
-`.append(selector, text)`
+#### validateField
+`.validateField(selectorOrElements)`
 
 ###### Description:
-Append validation messages
+Validate individual fields
 
 ###### Parameters:
-> selector: String 
-
-> text: String
+> selectorOrDocElement: doc-amd object or String //A CSS selector. Note that, if it is a class name with dots, the dots must be escaped. E.g.: doc(".my\\\\.class")
 
 ###### Sample:
 ``` js
 define(['form'], function(form) {
-  form.append('label[for="date"]', 'dd/mm/yyyy'); //This will append <span class="message">dd/mm/yyyy</span>. Note that this element will be removed when the user starts to type another value.
-});
-```
-
-#### removeValidationErrors
-`.removeValidationErrors(selector)`
-
-###### Description:
-Removes all validation messages from selected form
-
-###### Parameters:
-> selector: String 
-
-###### Sample:
-``` js
-define(['form'], function(form) {
-  form.removeValidationErrors('#form'); //This will remove all validation messages appended
+  form.validateField($('input[name=example1]')); //This will validate the field with name 'example1' and it will show a error message.
 });
 ```
 
