@@ -10,6 +10,7 @@
   "scripts": {
     "pretest": "eslint *.js **/*.js",
     "test": "bash test.sh",
+    "build": "uglifyjs form.js -o form.min.js --compress drop_console=true --mangle --screw-ie8",
     "preinstall": "rm -vrf bower_components",
     "postinstall": "bower install"
   },
@@ -24,6 +25,7 @@
     "http-server": "0.10.0",
     "mocha": "4.0.1",
     "mocha-phantomjs": "4.1.0",
-    "phantomjs": "2.1.7"
+    "phantomjs": "2.1.7",
+    "uglify-js": "3.1.10"
   }
 }
