@@ -74,6 +74,13 @@
 
 			mocha.ui("bdd");
 
+			var assertErrosFields = function(fields, errors) {
+				fields.forEach(function(field, i) {
+					expect(errors[i].message).to.deep.include(field.message);
+					expect(errors[i].field.first()).to.deep.include(field.input.first());
+				});
+			};
+
 			define(['doc', 'form'], function($, Form) {
 				describe('Form', function(){
 					var form;
@@ -165,6 +172,7 @@
 							$min = $('input[name=test5]'),
 							$pattern = $('input[name=test6]'),
 							$url = $('input[name=test8]'),
+							$patternRequired = $('input[name=test9]'),
 							$max = $('input[name=test10]'),
 							called = false,
 							errors = [];
@@ -174,6 +182,9 @@
 						$maxlength.val('abc');
 						$pattern.val('a');
 						$url.val('elo7.');
+						$max.val('elo7');
+						$min.val('a');
+						$patternRequired.val('1001-10');
 
 						form.validate('#formClearMessages', {
 							error: function(result){
@@ -184,13 +195,42 @@
 						$('#formClearMessages').trigger('submit');
 
 						expect(called).to.be.true;
-						expect(errors).to.deep.include({ message: 'Preencha este campo logo!', field: $required });
-						expect(errors).to.deep.include({ message: 'Insira um e-mail válido, por favor!', field: $email });
-						expect(errors).to.deep.include({ message: 'Insira no máximo 2 caracteres, por favor!', field: $maxlength });
-						expect(errors).to.deep.include({ message: 'Insira no mínimo 3 caracteres, por favor!', field: $min });
-						expect(errors).to.deep.include({ message: 'Insira um valor válido, por favor!', field: $pattern });
-						expect(errors).to.deep.include({ message: 'Insira uma url válida, por favor!', field: $url });
-						expect(errors).to.deep.include({ message: 'Insira um valor menor ou igual a 2, por favor!', field: $max });
+
+						var fields = [
+							{
+								input: $required,
+								message: 'This field is required'
+							},
+							{
+								input: $email,
+								message: 'Please enter a valid email address'
+							},
+							{
+								input: $maxlength,
+								message: 'Please enter a value with max length less than or equal to 2'
+							},
+							{
+								input: $min,
+								message: 'Please enter a value greater than or equal to 3'
+							},
+							{
+								input: $pattern,
+								message: 'Please enter a valid value'
+							},
+							{
+								input: $url,
+								message: 'Please enter a valid url'
+							},
+							{
+								input: $patternRequired,
+								message: 'Please enter a valid value'
+							},
+							{
+								input: $max,
+								message: 'Please enter a value less than or equal to 2'
+							}];
+
+						assertErrosFields(fields, errors);
 					});
 
 					it('should return a message when the field is empty and required', function() {
@@ -454,6 +494,7 @@
 							$min = $('input[name=test5]'),
 							$pattern = $('input[name=test6]'),
 							$url = $('input[name=test8]'),
+							$patternRequired = $('input[name=test9]'),
 							$max = $('input[name=test10]'),
 							called = false,
 							errors = [];
@@ -474,14 +515,41 @@
 
 						$('#formClearMessages').trigger('submit');
 
-						expect(called).to.be.true;
-						expect(errors[0]).to.eql({ field: $required, message: 'Preencha este campo logo!' });
-						expect(errors).to.deep.include({ message: 'Insira um e-mail válido, por favor!', field: $email });
-						expect(errors).to.deep.include({ message: 'Insira no máximo 2 caracteres, por favor!', field: $maxlength });
-						expect(errors).to.deep.include({ message: 'Insira no mínimo 3 caracteres, por favor!', field: $min });
-						expect(errors).to.deep.include({ message: 'Insira um valor válido, por favor!', field: $pattern });
-						expect(errors).to.deep.include({ message: 'Insira uma url válida, por favor!', field: $url });
-						expect(errors).to.deep.include({ message: 'Insira um valor menor ou igual a 2, por favor!', field: $max });
+						var fields = [
+							{
+								input: $required,
+								message: 'Preencha este campo logo'
+							},
+							{
+								input: $email,
+								message: 'Insira um e-mail válido, por favor!'
+							},
+							{
+								input: $maxlength,
+								message: 'Insira no máximo 2 caracteres, por favor!'
+							},
+							{
+								input: $min,
+								message: 'Insira no mínimo 3 caracteres, por favor!'
+							},
+							{
+								input: $pattern,
+								message: 'Insira um valor válido, por favor!'
+							},
+							{
+								input: $url,
+								message: 'Insira uma url válida, por favor!'
+							},
+							{
+								input: $patternRequired,
+								message: 'Preencha este campo logo!'
+							},
+							{
+								input: $max,
+								message: 'Insira um valor menor ou igual a 2, por favor!'
+							}];
+
+						assertErrosFields(fields, errors);
 					});
 				});
 			});
