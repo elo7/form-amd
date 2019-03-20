@@ -11,7 +11,7 @@ Then, we built it from scratch.
 
 ## Installation
 
-Install with [Bower](http://bower.io): `bower install form-amd`
+Install with [npm](https://www.npmjs.com): `npm install elo7-form-amd`
 
 ## Dependencies
 
@@ -62,7 +62,7 @@ define(['form'], function(form) {
 Focus on selected element. If the device is mobile, it calls **scrollIntoView** function.
 
 ###### Parameters:
-> selector: String 
+> selector: String
 
 ###### Sample:
 ``` js
@@ -120,7 +120,7 @@ define(['form'], function(form) {
 Append validation messages
 
 ###### Parameters:
-> selector: String 
+> selector: String
 
 > text: String
 
@@ -138,7 +138,7 @@ define(['form'], function(form) {
 Removes all validation messages from selected form
 
 ###### Parameters:
-> selector: String 
+> selector: String
 
 ###### Sample:
 ``` js
@@ -153,4 +153,4 @@ Form-amd is released under the [BSD](https://github.com/elo7/form-amd/blob/maste
 
 * * *
 
-Copyright :copyright: 2016 Elo7# form-amd
+Copyright :copyright: 2019 Elo7# form-amd
