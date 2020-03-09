@@ -1,8 +1,7 @@
 /*eslint no-unused-vars: ["error", { "vars": "local" }]*/
-/*global arrayEquals*/
 
 //http://stackoverflow.com/a/14853974
-function arrayEquals (a, b) {
+window.arrayEquals = function(a, b) {
 	'use strict';
 
 	// if the other array is a falsy value, return
@@ -27,4 +26,4 @@ function arrayEquals (a, b) {
 	}
 
 	return true;
-}
+};
