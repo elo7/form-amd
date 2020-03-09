@@ -231,10 +231,10 @@
 						var $root, $form;
 
 						before(function() {
-							if(!HTMLElement.prototype.createShadowRoot) {
+							if(!HTMLElement.prototype.attachShadow) {
 								this.skip();
 							}
-							$root = $($('#form-shadow-root').first().createShadowRoot());
+              $root = $($('#form-shadow-root').first().attachShadow({ mode: 'open' }));
 							$root.append($('#formClearMessages').first().cloneNode(true));
 							$form = $root.find('#formClearMessages');
 						});
