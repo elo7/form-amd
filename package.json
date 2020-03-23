@@ -1,6 +1,6 @@
 {
   "name": "elo7-form-amd",
-  "version": "1.1.1-SNAPSHOT",
+  "version": "1.1.1",
   "description": "A small library to help form manipulations and validation",
   "keywords": [
     "js",
