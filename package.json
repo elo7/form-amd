@@ -13,7 +13,7 @@
   },
   "author": "Elo7",
   "dependencies": {
-    "elo7-doc-amd": "1.6.0"
+    "elo7-doc-amd": "1.7.0"
   },
   "devDependencies": {
     "define-async": "1.3.2",
