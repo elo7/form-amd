@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "define-async": "1.3.2",
-    "eslint": "6.8.0",
+    "eslint": "7.15.0",
     "http-server": "0.12.3",
     "mocha": "7.1.2",
     "mocha-chrome": "2.2.0",
